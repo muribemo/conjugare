@@ -1,6 +1,6 @@
 const { test } = require('node:test');
 const assert = require('node:assert/strict');
-const { recordSessionAnswers, getStats, getWeakestTenses, aggregateBy } = require('../js/stats.js');
+const { recordSessionAnswers, getStats, getWeakestTenses, aggregateBy, getVerbBreakdown } = require('../js/stats.js');
 
 function fakeStorage() {
   const data = new Map();
@@ -66,4 +66,47 @@ test('getWeakestTenses sorts ascending by accuracy, requires a minimum sample si
   const weakest = getWeakestTenses(storage, { minSamples: 3 });
   assert.equal(weakest[0].tense, 'imperfetto');
   assert.ok(weakest[0].accuracy < weakest[1].accuracy); // imperfetto (1/3) < presente (3/3)
+});
+
+test('getVerbBreakdown returns every practiced verb sorted worst-accuracy-first', () => {
+  const storage = fakeStorage();
+  recordSessionAnswers(storage, [
+    { infinitive: 'parlare', tense: 'presente', pronoun: 'io', correct: true, accentOnly: false },
+    { infinitive: 'parlare', tense: 'presente', pronoun: 'tu', correct: true, accentOnly: false },
+    { infinitive: 'essere', tense: 'presente', pronoun: 'io', correct: false, accentOnly: false },
+    { infinitive: 'essere', tense: 'presente', pronoun: 'tu', correct: true, accentOnly: false },
+  ]);
+  const breakdown = getVerbBreakdown(storage);
+  assert.equal(breakdown.length, 2);
+  assert.equal(breakdown[0].infinitive, 'essere');
+  assert.equal(breakdown[0].total, 2);
+  assert.equal(breakdown[0].correct, 1);
+  assert.equal(breakdown[0].accuracy, 0.5);
+  assert.equal(breakdown[1].infinitive, 'parlare');
+  assert.equal(breakdown[1].accuracy, 1);
+});
+
+test('getVerbBreakdown breaks accuracy ties alphabetically by infinitive', () => {
+  const storage = fakeStorage();
+  recordSessionAnswers(storage, [
+    { infinitive: 'vivere', tense: 'presente', pronoun: 'io', correct: true, accentOnly: false },
+    { infinitive: 'andare', tense: 'presente', pronoun: 'io', correct: true, accentOnly: false },
+  ]);
+  const breakdown = getVerbBreakdown(storage);
+  assert.deepEqual(breakdown.map((v) => v.infinitive), ['andare', 'vivere']);
+});
+
+test('getVerbBreakdown returns an empty array when there is no history', () => {
+  const storage = fakeStorage();
+  assert.deepEqual(getVerbBreakdown(storage), []);
+});
+
+test('getVerbBreakdown includes verbs with only 1 sample (no minSamples filter)', () => {
+  const storage = fakeStorage();
+  recordSessionAnswers(storage, [
+    { infinitive: 'fare', tense: 'presente', pronoun: 'io', correct: true, accentOnly: false },
+  ]);
+  const breakdown = getVerbBreakdown(storage);
+  assert.equal(breakdown.length, 1);
+  assert.equal(breakdown[0].total, 1);
 });

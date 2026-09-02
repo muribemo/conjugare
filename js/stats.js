@@ -48,7 +48,14 @@ function getWeakestTenses(storage, { minSamples = 3 } = {}) {
     .sort((a, b) => a.accuracy - b.accuracy);
 }
 
-const Stats = { recordSessionAnswers, getStats, getWeakestTenses, aggregateBy };
+function getVerbBreakdown(storage) {
+  const stats = getStats(storage);
+  return Object.entries(stats.byVerb)
+    .map(([infinitive, s]) => ({ infinitive, total: s.total, correct: s.correct, accuracy: s.correct / s.total }))
+    .sort((a, b) => a.accuracy - b.accuracy || a.infinitive.localeCompare(b.infinitive));
+}
+
+const Stats = { recordSessionAnswers, getStats, getWeakestTenses, aggregateBy, getVerbBreakdown };
 
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = Stats;
