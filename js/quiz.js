@@ -77,6 +77,25 @@ function getCurrentQuestion(session) {
   return session.questions[session.currentIndex];
 }
 
+// Rebuilds the exact questions the user got wrong (same verb/tense/pronoun/
+// correctAnswer already stored on each failed answer — no need to re-derive
+// via verb-bank) into a new practice session, so mistakes can be retried.
+function createReviewSession(failedAnswers, answerMode) {
+  const questions = failedAnswers.map(({ infinitive, tense, pronoun, correctAnswer }) => {
+    const mode = answerMode === 'mixed' ? (Math.random() < 0.5 ? 'typed' : 'multiple') : answerMode;
+    const question = { infinitive, tense, pronoun, correctAnswer, answerMode: mode };
+    if (mode === 'multiple') {
+      const distractors = generateDistractors(correctAnswer, infinitive, tense, 2);
+      question.options = shuffle([correctAnswer, ...distractors]);
+    }
+    return question;
+  });
+
+  const tenses = [...new Set(failedAnswers.map((a) => a.tense))];
+
+  return { tenses, answerMode, questionCount: questions.length, questions, currentIndex: 0, answers: [] };
+}
+
 function normalize(str) {
   return str.trim().toLowerCase().replace(/\s+/g, ' ');
 }
@@ -112,7 +131,7 @@ function recordAnswer(session, userAnswer) {
   return result;
 }
 
-const Quiz = { createSession, getCurrentQuestion, generateDistractors, checkAnswer, recordAnswer };
+const Quiz = { createSession, getCurrentQuestion, generateDistractors, checkAnswer, recordAnswer, createReviewSession };
 
 if (isNode) {
   module.exports = Quiz;

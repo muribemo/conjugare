@@ -2,7 +2,7 @@
 const { test } = require('node:test');
 const assert = require('node:assert/strict');
 const { PRONOUNS } = require('../js/conjugation-engine.js');
-const { createSession, getCurrentQuestion, generateDistractors, checkAnswer, recordAnswer } = require('../js/quiz.js');
+const { createSession, getCurrentQuestion, generateDistractors, checkAnswer, recordAnswer, createReviewSession } = require('../js/quiz.js');
 
 test('createSession builds the requested number of questions, only from selected tenses', () => {
   const session = createSession({
@@ -70,6 +70,56 @@ test('checkAnswer: accent-only mismatch is marked incorrect but flagged accentOn
 
 test('checkAnswer: collapses internal whitespace in compound tense answers', () => {
   assert.deepEqual(checkAnswer('ho  parlato', 'ho parlato'), { correct: true, accentOnly: false });
+});
+
+test('createReviewSession rebuilds the exact failed questions, typed mode', () => {
+  const failed = [
+    { infinitive: 'parlare', tense: 'presente', pronoun: 'io', correctAnswer: 'parlo' },
+    { infinitive: 'essere', tense: 'presente', pronoun: 'tu', correctAnswer: 'sei' },
+  ];
+  const session = createReviewSession(failed, 'typed');
+  assert.equal(session.questionCount, 2);
+  assert.equal(session.questions.length, 2);
+  assert.equal(session.currentIndex, 0);
+  assert.equal(session.answers.length, 0);
+  assert.deepEqual(session.questions[0], {
+    infinitive: 'parlare', tense: 'presente', pronoun: 'io', correctAnswer: 'parlo', answerMode: 'typed',
+  });
+  assert.deepEqual(session.questions[1], {
+    infinitive: 'essere', tense: 'presente', pronoun: 'tu', correctAnswer: 'sei', answerMode: 'typed',
+  });
+  assert.deepEqual(session.tenses, ['presente']);
+});
+
+test('createReviewSession attaches fresh multiple-choice options when mode is "multiple"', () => {
+  const failed = [
+    { infinitive: 'parlare', tense: 'presente', pronoun: 'io', correctAnswer: 'parlo' },
+  ];
+  const session = createReviewSession(failed, 'multiple');
+  const question = session.questions[0];
+  assert.equal(question.answerMode, 'multiple');
+  assert.equal(question.options.length, 3);
+  assert.ok(question.options.includes('parlo'));
+  assert.equal(new Set(question.options).size, 3);
+});
+
+test('createReviewSession with "mixed" assigns typed or multiple per question', () => {
+  const failed = Array.from({ length: 20 }, () => (
+    { infinitive: 'parlare', tense: 'presente', pronoun: 'io', correctAnswer: 'parlo' }
+  ));
+  const session = createReviewSession(failed, 'mixed');
+  const modes = new Set(session.questions.map((q) => q.answerMode));
+  assert.ok(modes.has('typed') && modes.has('multiple'));
+});
+
+test('createReviewSession collects the unique tenses from the failed answers', () => {
+  const failed = [
+    { infinitive: 'parlare', tense: 'presente', pronoun: 'io', correctAnswer: 'parlo' },
+    { infinitive: 'essere', tense: 'imperfetto', pronoun: 'tu', correctAnswer: 'eri' },
+    { infinitive: 'avere', tense: 'presente', pronoun: 'noi', correctAnswer: 'abbiamo' },
+  ];
+  const session = createReviewSession(failed, 'typed');
+  assert.deepEqual(session.tenses, ['presente', 'imperfetto']);
 });
 
 test('recordAnswer appends to session.answers and advances currentIndex', () => {
