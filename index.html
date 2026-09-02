@@ -93,7 +93,14 @@
       <button id="retry-session-btn" type="button" class="primary-btn">Repetir tanda</button>
       <button id="back-to-setup-btn" type="button" class="primary-btn">Configurar otra</button>
     </section>
-    <section id="screen-progress" class="screen" hidden></section>
+    <section id="screen-progress" class="screen" hidden>
+      <h2>Tu progreso</h2>
+      <p id="progress-empty" class="subtitle" hidden>Aun no tienes datos. Completa una tanda de practica primero.</p>
+      <div id="progress-weakest"></div>
+      <h3>Por tiempo verbal</h3>
+      <div id="progress-by-tense"></div>
+      <button id="back-from-progress-btn" type="button" class="primary-btn">Volver</button>
+    </section>
   </main>
 
   <script src="js/conjugation-engine.js"></script>

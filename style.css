@@ -128,3 +128,5 @@ fieldset label {
 }
 
 #retry-session-btn { margin-right: 8px; }
+
+#progress-weakest .breakdown-row { border-color: var(--error); }

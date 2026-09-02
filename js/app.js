@@ -179,10 +179,48 @@
     });
   }
 
+  function renderProgressScreen() {
+    const stats = Stats.getStats(window.localStorage);
+    const entries = Object.entries(stats.byTense);
+    const emptyEl = document.getElementById('progress-empty');
+    const weakestEl = document.getElementById('progress-weakest');
+    const byTenseEl = document.getElementById('progress-by-tense');
+
+    if (entries.length === 0) {
+      emptyEl.hidden = false;
+      weakestEl.innerHTML = '';
+      byTenseEl.innerHTML = '';
+      return;
+    }
+    emptyEl.hidden = true;
+
+    const weakest = Stats.getWeakestTenses(window.localStorage, { minSamples: 3 }).slice(0, 3);
+    weakestEl.innerHTML = weakest.length
+      ? `<h3>A reforzar</h3>${weakest.map((w) =>
+          `<div class="breakdown-row"><span>${TENSE_LABELS[w.tense]}</span><span>${Math.round(w.accuracy * 100)}%</span></div>`
+        ).join('')}`
+      : '';
+
+    byTenseEl.innerHTML = entries.map(([tense, s]) =>
+      `<div class="breakdown-row"><span>${TENSE_LABELS[tense]}</span><span>${s.correct}/${s.total}</span></div>`
+    ).join('');
+  }
+
+  function initProgressScreen() {
+    document.getElementById('nav-progress').addEventListener('click', () => {
+      showScreen('screen-progress');
+      renderProgressScreen();
+    });
+    document.getElementById('back-from-progress-btn').addEventListener('click', () => {
+      showScreen('screen-setup');
+    });
+  }
+
   document.addEventListener('DOMContentLoaded', () => {
     initSetupScreen();
     initPracticeScreen();
     initResultScreen();
+    initProgressScreen();
     showScreen('screen-setup');
   });
 })();
