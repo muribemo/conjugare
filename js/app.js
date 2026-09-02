@@ -27,15 +27,27 @@
     startBtn.addEventListener('click', () => {
       const tenses = [...document.querySelectorAll('input[name="tense"]:checked')].map((el) => el.value);
       if (tenses.length === 0) {
+        errorEl.textContent = 'Elige al menos un tiempo verbal.';
         errorEl.hidden = false;
         return;
+      }
+
+      const favoritesOnly = document.getElementById('favorites-only-checkbox').checked;
+      let verbPool;
+      if (favoritesOnly) {
+        verbPool = Favorites.getFavorites(window.localStorage);
+        if (verbPool.length === 0) {
+          errorEl.textContent = 'No tienes verbos favoritos guardados aun.';
+          errorEl.hidden = false;
+          return;
+        }
       }
       errorEl.hidden = true;
 
       const answerMode = document.querySelector('input[name="answer-mode"]:checked').value;
       const questionCount = Number(document.querySelector('input[name="question-count"]:checked').value);
 
-      startSession({ tenses, answerMode, questionCount });
+      startSession({ tenses, answerMode, questionCount, verbPool });
     });
   }
 
@@ -67,6 +79,7 @@
     document.getElementById('practice-tense-label').textContent = TENSE_LABELS[question.tense];
     document.getElementById('practice-verb').textContent = question.infinitive;
     document.getElementById('practice-prompt').textContent = `${PRONOUN_LABELS[question.pronoun] || question.pronoun} ___`;
+    updateFavoriteButton(question.infinitive);
 
     document.getElementById('practice-feedback').hidden = true;
     document.getElementById('next-question-btn').hidden = true;
@@ -187,7 +200,19 @@
     });
   }
 
+  function updateFavoriteButton(infinitive) {
+    const favBtn = document.getElementById('toggle-favorite-btn');
+    const favorited = Favorites.isFavorite(window.localStorage, infinitive);
+    favBtn.textContent = favorited ? '★ Favorito' : '☆ Favorito';
+  }
+
   function initVerbTools() {
+    document.getElementById('toggle-favorite-btn').addEventListener('click', () => {
+      const infinitive = state.displayedQuestion.infinitive;
+      Favorites.toggleFavorite(window.localStorage, infinitive);
+      updateFavoriteButton(infinitive);
+    });
+
     const translationEl = document.getElementById('verb-translation');
     document.getElementById('show-translation-btn').addEventListener('click', () => {
       const question = state.displayedQuestion;
@@ -260,8 +285,8 @@
     });
 
     document.getElementById('retry-session-btn').addEventListener('click', () => {
-      const { tenses, answerMode, questionCount } = state.session;
-      startSession({ tenses, answerMode, questionCount });
+      const { tenses, answerMode, questionCount, verbPool } = state.session;
+      startSession({ tenses, answerMode, questionCount, verbPool });
     });
 
     document.getElementById('back-to-setup-btn').addEventListener('click', () => {
@@ -269,7 +294,18 @@
     });
   }
 
+  function renderFavoritesList() {
+    const favoritesEl = document.getElementById('progress-favorites');
+    favoritesEl.innerHTML = Favorites.getFavorites(window.localStorage).map((infinitive) =>
+      `<div class="breakdown-row"><span>${infinitive}</span><button type="button" class="remove-favorite-btn" data-infinitive="${infinitive}">Quitar</button></div>`
+    ).join('');
+  }
+
   function renderProgressScreen() {
+    // Favorites don't depend on answer history, so they're rendered
+    // regardless of whether there's any tense/verb history to show below.
+    renderFavoritesList();
+
     const stats = Stats.getStats(window.localStorage);
     const entries = Object.entries(stats.byTense);
     const emptyEl = document.getElementById('progress-empty');
@@ -313,6 +349,14 @@
     });
     document.getElementById('back-from-progress-btn').addEventListener('click', () => {
       showScreen('screen-setup');
+    });
+
+    // Delegated: favorite rows are regenerated on every renderProgressScreen call.
+    document.getElementById('progress-favorites').addEventListener('click', (event) => {
+      const infinitive = event.target.dataset.infinitive;
+      if (!infinitive) return;
+      Favorites.toggleFavorite(window.localStorage, infinitive);
+      renderFavoritesList();
     });
   }
 
