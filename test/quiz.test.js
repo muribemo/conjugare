@@ -68,6 +68,10 @@ test('checkAnswer: accent-only mismatch is marked incorrect but flagged accentOn
   assert.deepEqual(checkAnswer('parlo', 'parlò'), { correct: false, accentOnly: true });
 });
 
+test('checkAnswer: collapses internal whitespace in compound tense answers', () => {
+  assert.deepEqual(checkAnswer('ho  parlato', 'ho parlato'), { correct: true, accentOnly: false });
+});
+
 test('recordAnswer appends to session.answers and advances currentIndex', () => {
   const session = createSession({ tenses: ['presente'], answerMode: 'typed', questionCount: 3 });
   const question = getCurrentQuestion(session);

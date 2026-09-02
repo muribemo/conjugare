@@ -76,7 +76,7 @@ function getCurrentQuestion(session) {
 }
 
 function normalize(str) {
-  return str.trim().toLowerCase();
+  return str.trim().toLowerCase().replace(/\s+/g, ' ');
 }
 
 // Strips Italian accent marks to compare "the same word ignoring accents".
