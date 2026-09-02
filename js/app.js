@@ -5,7 +5,7 @@
 // in the browser.
 
 (function () {
-  const state = { session: null, sessionFinished: false };
+  const state = { session: null, sessionFinished: false, displayedQuestion: null };
 
   function showScreen(id) {
     document.querySelectorAll('.screen').forEach((el) => {
@@ -55,6 +55,13 @@
 
   function renderQuestionImpl() {
     const question = Quiz.getCurrentQuestion(state.session);
+    // Quiz.recordAnswer already advances session.currentIndex at answer time
+    // (not at "next question" time), so once feedback is showing,
+    // Quiz.getCurrentQuestion(state.session) points at the UPCOMING question,
+    // not the one on screen. state.displayedQuestion is the one actually
+    // rendered right now, for anything (like the verb helper buttons) that
+    // needs to look up data for the question the user is currently looking at.
+    state.displayedQuestion = question;
     document.getElementById('practice-progress').textContent =
       `Pregunta ${state.session.currentIndex + 1}/${state.session.questionCount}`;
     document.getElementById('practice-tense-label').textContent = TENSE_LABELS[question.tense];
@@ -183,7 +190,7 @@
   function initVerbTools() {
     const translationEl = document.getElementById('verb-translation');
     document.getElementById('show-translation-btn').addEventListener('click', () => {
-      const question = Quiz.getCurrentQuestion(state.session);
+      const question = state.displayedQuestion;
       const verb = VerbBank.getConjugation(question.infinitive);
       translationEl.textContent = verb.translation;
       translationEl.hidden = !translationEl.hidden;
@@ -191,7 +198,7 @@
 
     const modal = document.getElementById('conjugation-modal');
     document.getElementById('show-conjugation-btn').addEventListener('click', () => {
-      const question = Quiz.getCurrentQuestion(state.session);
+      const question = state.displayedQuestion;
       const verb = VerbBank.getConjugation(question.infinitive);
       document.getElementById('conjugation-modal-verb').textContent = question.infinitive;
 
