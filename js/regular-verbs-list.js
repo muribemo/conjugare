@@ -5,6 +5,7 @@
 // isIsc = true for -ire verbs conjugated with -isc- in presente/congiuntivo presente/imperativo.
 // Most -ire verbs in this list are NOT -isc- (dormire-type); isIsc ones are marked explicitly.
 
+(function () {
 const REGULAR_VERBS = [
   { infinitive: 'parlare', group: 'are', isIsc: false, auxiliary: 'avere', translation: 'hablar' },
   { infinitive: 'mangiare', group: 'are', isIsc: false, auxiliary: 'avere', translation: 'comer' },
@@ -43,3 +44,4 @@ if (typeof module !== 'undefined' && module.exports) {
 } else {
   window.RegularVerbsList = RegularVerbsList;
 }
+})();

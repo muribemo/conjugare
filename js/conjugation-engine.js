@@ -1,6 +1,7 @@
 // js/conjugation-engine.js
 
-const PRONOUNS = ['io', 'tu', 'lui_lei', 'noi', 'voi', 'loro'];
+(function () {
+  const PRONOUNS = ['io', 'tu', 'lui_lei', 'noi', 'voi', 'loro'];
 
 // Auxiliary verbs (avere/essere) conjugated in every SIMPLE tense.
 // These are needed to build every compound tense for every verb in the app,
@@ -178,7 +179,8 @@ const ConjugationEngine = {
 };
 
 if (typeof module !== 'undefined' && module.exports) {
-  module.exports = ConjugationEngine;
-} else {
-  window.ConjugationEngine = ConjugationEngine;
-}
+    module.exports = ConjugationEngine;
+  } else {
+    window.ConjugationEngine = ConjugationEngine;
+  }
+})();

@@ -3,6 +3,7 @@
 // Persists per-answer history to localStorage (or any getItem/setItem-compatible
 // storage, e.g. a fake in tests) and aggregates accuracy by tense and by verb.
 
+(function () {
 const STORAGE_KEY = 'conjugare_answer_history';
 
 function loadHistory(storage) {
@@ -54,3 +55,4 @@ if (typeof module !== 'undefined' && module.exports) {
 } else {
   window.Stats = Stats;
 }
+})();

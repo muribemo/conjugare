@@ -3,6 +3,7 @@
 // Unified verb lookup: irregular verbs are returned as-is from verbs-data.js;
 // regular verbs are conjugated on the fly via the engine, from regular-verbs-list.js.
 
+(function () {
 const isNode = typeof module !== 'undefined' && module.exports;
 const { conjugateRegularVerb } = isNode ? require('./conjugation-engine.js') : window.ConjugationEngine;
 const { REGULAR_VERBS } = isNode ? require('./regular-verbs-list.js') : window.RegularVerbsList;
@@ -38,3 +39,4 @@ if (isNode) {
 } else {
   window.VerbBank = VerbBank;
 }
+})();

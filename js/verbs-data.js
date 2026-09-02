@@ -5,6 +5,7 @@
 // Compound tenses are built with buildCompoundTenses so they stay consistent
 // with the engine's auxiliary tables instead of being hand-typed and error-prone.
 
+(function () {
 const { AUXILIARIES, buildCompoundTenses } = typeof module !== 'undefined' && module.exports
   ? require('./conjugation-engine.js')
   : window.ConjugationEngine;
@@ -584,3 +585,4 @@ if (typeof module !== 'undefined' && module.exports) {
 } else {
   window.VerbsData = VerbsData;
 }
+})();

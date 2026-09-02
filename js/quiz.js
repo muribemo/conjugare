@@ -4,6 +4,7 @@
 // from the tenses the user selected, and (for multiple-choice questions)
 // generates plausible wrong answers from other pronoun forms of the same tense.
 
+(function () {
 const isNode = typeof module !== 'undefined' && module.exports;
 const { PRONOUNS } = isNode ? require('./conjugation-engine.js') : window.ConjugationEngine;
 const { getConjugation, listAllVerbs } = isNode ? require('./verb-bank.js') : window.VerbBank;
@@ -118,3 +119,4 @@ if (isNode) {
 } else {
   window.Quiz = Quiz;
 }
+})();

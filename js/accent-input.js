@@ -6,6 +6,7 @@
 // key replaces it with the accented form. Typing anything else just closes
 // the popup and leaves the vowel as typed — nothing is ever blocked.
 
+(function () {
 const ACCENT_MAP = {
   a: ['à', 'a'],
   e: ['è', 'é', 'e'],
@@ -71,3 +72,4 @@ if (typeof module !== 'undefined' && module.exports) {
 } else {
   window.AccentInput = AccentInput;
 }
+})();
