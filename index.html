@@ -67,7 +67,25 @@
 
       <button id="start-session-btn" type="button" class="primary-btn">Empezar</button>
     </section>
-    <section id="screen-practice" class="screen" hidden></section>
+    <section id="screen-practice" class="screen" hidden>
+      <p class="label" id="practice-progress">Pregunta 1/10</p>
+      <p class="label" id="practice-tense-label">Congiuntivo presente</p>
+      <h3 id="practice-verb"></h3>
+      <p class="subtitle" id="practice-prompt"></p>
+
+      <div id="practice-typed-mode">
+        <div class="accent-input-wrapper">
+          <input type="text" id="practice-input" autocomplete="off" autocapitalize="off">
+          <div id="accent-popup" class="accent-popup" hidden></div>
+        </div>
+        <button id="submit-answer-btn" type="button" class="primary-btn">Comprobar</button>
+      </div>
+
+      <div id="practice-multiple-mode" class="options" hidden></div>
+
+      <p id="practice-feedback" class="feedback-text" hidden></p>
+      <button id="next-question-btn" type="button" class="primary-btn" hidden>Siguiente</button>
+    </section>
     <section id="screen-result" class="screen" hidden></section>
     <section id="screen-progress" class="screen" hidden></section>
   </main>
