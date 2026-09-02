@@ -153,3 +153,68 @@ test('conjugateRegularVerb produces all 15 tenses for andare-shaped -are verb (e
   assert.deepEqual(result.passato_prossimo,
     ['sono arrivato', 'sei arrivato', 'è arrivato', 'siamo arrivati', 'siete arrivati', 'sono arrivati']);
 });
+
+// -- Bug 1: -iare orthographic collapse (mangiare, studiare) --------------
+
+test('conjugateRegularVerb presente collapses double i for mangiare (-ciare/-giare stem ends in i)', () => {
+  const { conjugateRegularVerb } = require('../js/conjugation-engine.js');
+  const result = conjugateRegularVerb('mangiare', 'are', false, 'avere');
+  assert.deepEqual(result.presente,
+    ['mangio', 'mangi', 'mangia', 'mangiamo', 'mangiate', 'mangiano']);
+});
+
+test('conjugateRegularVerb congiuntivo_presente collapses double i for mangiare', () => {
+  const { conjugateRegularVerb } = require('../js/conjugation-engine.js');
+  const result = conjugateRegularVerb('mangiare', 'are', false, 'avere');
+  assert.deepEqual(result.congiuntivo_presente,
+    ['mangi', 'mangi', 'mangi', 'mangiamo', 'mangiate', 'mangino']);
+});
+
+test('conjugateRegularVerb imperativo collapses double i for mangiare', () => {
+  const { conjugateRegularVerb } = require('../js/conjugation-engine.js');
+  const result = conjugateRegularVerb('mangiare', 'are', false, 'avere');
+  assert.deepEqual(result.imperativo,
+    ['mangia', 'mangi', 'mangiamo', 'mangiate', 'mangino']);
+});
+
+test('conjugateRegularVerb futuro_semplice drops stem i for -giare verb mangiare', () => {
+  const { conjugateRegularVerb } = require('../js/conjugation-engine.js');
+  const result = conjugateRegularVerb('mangiare', 'are', false, 'avere');
+  assert.deepEqual(result.futuro_semplice,
+    ['mangerò', 'mangerai', 'mangerà', 'mangeremo', 'mangerete', 'mangeranno']);
+});
+
+test('conjugateRegularVerb condizionale_presente drops stem i for -giare verb mangiare', () => {
+  const { conjugateRegularVerb } = require('../js/conjugation-engine.js');
+  const result = conjugateRegularVerb('mangiare', 'are', false, 'avere');
+  assert.deepEqual(result.condizionale_presente,
+    ['mangerei', 'mangeresti', 'mangerebbe', 'mangeremmo', 'mangereste', 'mangerebbero']);
+});
+
+test('conjugateRegularVerb presente collapses double i for studiare (root ends in i, no soft c/g)', () => {
+  const { conjugateRegularVerb } = require('../js/conjugation-engine.js');
+  const result = conjugateRegularVerb('studiare', 'are', false, 'avere');
+  assert.deepEqual(result.presente,
+    ['studio', 'studi', 'studia', 'studiamo', 'studiate', 'studiano']);
+});
+
+test('conjugateRegularVerb congiuntivo_presente collapses double i for studiare', () => {
+  const { conjugateRegularVerb } = require('../js/conjugation-engine.js');
+  const result = conjugateRegularVerb('studiare', 'are', false, 'avere');
+  assert.deepEqual(result.congiuntivo_presente,
+    ['studi', 'studi', 'studi', 'studiamo', 'studiate', 'studino']);
+});
+
+test('conjugateRegularVerb imperativo collapses double i for studiare', () => {
+  const { conjugateRegularVerb } = require('../js/conjugation-engine.js');
+  const result = conjugateRegularVerb('studiare', 'are', false, 'avere');
+  assert.deepEqual(result.imperativo,
+    ['studia', 'studi', 'studiamo', 'studiate', 'studino']);
+});
+
+test('conjugateRegularVerb futuro_semplice keeps stem i for studiare (not a soft c/g verb)', () => {
+  const { conjugateRegularVerb } = require('../js/conjugation-engine.js');
+  const result = conjugateRegularVerb('studiare', 'are', false, 'avere');
+  assert.deepEqual(result.futuro_semplice,
+    ['studierò', 'studierai', 'studierà', 'studieremo', 'studierete', 'studieranno']);
+});

@@ -26,11 +26,37 @@ const AUXILIARIES = {
   },
 };
 
+// For -are verbs whose root ends in an unstressed 'i' (e.g. mangiare -> root
+// 'mangi', studiare -> root 'studi'), a conjugation ending that also starts
+// with 'i' collapses into a single 'i' rather than doubling: 'mangi' + 'i'
+// -> 'mangi' (not 'mangii'), 'mangi' + 'iamo' -> 'mangiamo' (not
+// 'mangiiamo'). This mirrors standard Italian orthography.
+function attachAreEnding(root, ending) {
+  if (root.endsWith('i') && ending.startsWith('i')) {
+    return root + ending.slice(1);
+  }
+  return root + ending;
+}
+
+// For -are verbs whose root ends in a soft 'ci'/'gi' (e.g. mangiare -> root
+// 'mangi', cominciare -> root 'cominci'), the stem 'i' is dropped before
+// endings that start with 'e' (futuro semplice / condizionale presente),
+// since 'ce'/'ge' are already soft and the 'i' would be redundant:
+// 'mangi' + 'er...' -> 'manger...' (not 'mangier...'). This does NOT apply
+// to -iare verbs whose root doesn't end in a soft c/g (e.g. studiare keeps
+// 'studier...').
+function areFuturoStem(root) {
+  if (root.endsWith('ci') || root.endsWith('gi')) return root.slice(0, -1);
+  return root;
+}
+
 // Endings for each simple tense, by group ('are'/'ere'/'ire').
 // isc only changes 'presente', 'congiuntivo_presente' and 'imperativo' for -ire verbs.
 function conjugateSimpleTense(root, group, isIsc, tense) {
   if (tense === 'presente') {
-    if (group === 'are') return [root + 'o', root + 'i', root + 'a', root + 'iamo', root + 'ate', root + 'ano'];
+    if (group === 'are') {
+      return ['o', 'i', 'a', 'iamo', 'ate', 'ano'].map(ending => attachAreEnding(root, ending));
+    }
     if (group === 'ere') return [root + 'o', root + 'i', root + 'e', root + 'iamo', root + 'ete', root + 'ono'];
     // ire
     if (isIsc) return [root + 'isco', root + 'isci', root + 'isce', root + 'iamo', root + 'ite', root + 'iscono'];
@@ -56,12 +82,12 @@ function conjugateSimpleTense(root, group, isIsc, tense) {
   }
 
   if (tense === 'futuro_semplice') {
-    const stem = group === 'ire' ? root + 'ir' : root + 'er';
+    const stem = group === 'ire' ? root + 'ir' : group === 'are' ? areFuturoStem(root) + 'er' : root + 'er';
     return [stem + 'ò', stem + 'ai', stem + 'à', stem + 'emo', stem + 'ete', stem + 'anno'];
   }
 
   if (tense === 'congiuntivo_presente') {
-    if (group === 'are') return [root + 'i', root + 'i', root + 'i', root + 'iamo', root + 'iate', root + 'ino'];
+    if (group === 'are') return ['i', 'i', 'i', 'iamo', 'iate', 'ino'].map(ending => attachAreEnding(root, ending));
     if (group === 'ere') return [root + 'a', root + 'a', root + 'a', root + 'iamo', root + 'iate', root + 'ano'];
     if (isIsc) return [root + 'isca', root + 'isca', root + 'isca', root + 'iamo', root + 'iate', root + 'iscano'];
     return [root + 'a', root + 'a', root + 'a', root + 'iamo', root + 'iate', root + 'ano'];
@@ -76,7 +102,7 @@ function conjugateSimpleTense(root, group, isIsc, tense) {
   }
 
   if (tense === 'condizionale_presente') {
-    const stem = group === 'ire' ? root + 'ir' : root + 'er';
+    const stem = group === 'ire' ? root + 'ir' : group === 'are' ? areFuturoStem(root) + 'er' : root + 'er';
     return [stem + 'ei', stem + 'esti', stem + 'ebbe', stem + 'emmo', stem + 'este', stem + 'ebbero'];
   }
 
@@ -85,7 +111,7 @@ function conjugateSimpleTense(root, group, isIsc, tense) {
 
 // Imperativo presente has only 5 forms (no "io"): tu, Lei, noi, voi, Loro.
 function conjugateImperativo(root, group, isIsc) {
-  if (group === 'are') return [root + 'a', root + 'i', root + 'iamo', root + 'ate', root + 'ino'];
+  if (group === 'are') return ['a', 'i', 'iamo', 'ate', 'ino'].map(ending => attachAreEnding(root, ending));
   if (group === 'ere') return [root + 'i', root + 'a', root + 'iamo', root + 'ete', root + 'ano'];
   if (isIsc) return [root + 'isci', root + 'isca', root + 'iamo', root + 'ite', root + 'iscano'];
   return [root + 'i', root + 'a', root + 'iamo', root + 'ite', root + 'ano'];
