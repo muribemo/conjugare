@@ -48,6 +48,7 @@ function getWeakestTenses(storage, { minSamples = 3 } = {}) {
     .sort((a, b) => a.accuracy - b.accuracy);
 }
 
+// Unlike getWeakestTenses, no minSamples filter — surfaces every verb ever practiced.
 function getVerbBreakdown(storage) {
   const stats = getStats(storage);
   return Object.entries(stats.byVerb)
