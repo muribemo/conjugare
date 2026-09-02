@@ -145,14 +145,49 @@
     renderResultImpl();
   }
 
-  // renderResultImpl is defined in a later task (result screen).
-  var renderResultImpl = function () {
-    throw new Error('renderResultImpl not implemented yet (see result screen task)');
-  };
+  function renderResultImpl() {
+    const { answers, tenses, answerMode, questionCount } = state.session;
+    const correctCount = answers.filter((a) => a.correct).length;
+    const percent = Math.round((correctCount / answers.length) * 100);
+    document.getElementById('result-summary').textContent =
+      `${correctCount}/${answers.length} correctas (${percent}%)`;
+
+    const byTense = {};
+    for (const a of answers) {
+      if (!byTense[a.tense]) byTense[a.tense] = { total: 0, correct: 0 };
+      byTense[a.tense].total += 1;
+      if (a.correct) byTense[a.tense].correct += 1;
+    }
+
+    const breakdownEl = document.getElementById('result-breakdown');
+    breakdownEl.innerHTML = '';
+    Object.entries(byTense).forEach(([tense, s]) => {
+      const row = document.createElement('div');
+      row.className = 'breakdown-row';
+      row.innerHTML = `<span>${TENSE_LABELS[tense]}</span><span>${s.correct}/${s.total}</span>`;
+      breakdownEl.appendChild(row);
+    });
+
+    state.lastConfig = { tenses, answerMode, questionCount };
+  }
+
+  function initResultScreen() {
+    document.getElementById('retry-session-btn').addEventListener('click', () => {
+      state.session = Quiz.createSession(state.lastConfig);
+      state.sessionFinished = false;
+      showScreen('screen-practice');
+      renderQuestionImpl();
+    });
+
+    document.getElementById('back-to-setup-btn').addEventListener('click', () => {
+      showScreen('screen-setup');
+    });
+  }
 
   document.addEventListener('DOMContentLoaded', () => {
     initSetupScreen();
     initPracticeScreen();
+    initResultScreen();
     showScreen('screen-setup');
   });
 })();

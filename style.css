@@ -116,3 +116,15 @@ fieldset label {
 .feedback-text { font-size: 15px; margin-top: 12px; }
 .feedback-text.correct { color: var(--success); }
 .feedback-text.incorrect { color: var(--error); }
+
+#result-breakdown { margin: 16px 0; }
+
+.breakdown-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 14px;
+}
+
+#retry-session-btn { margin-right: 8px; }
