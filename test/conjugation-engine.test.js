@@ -34,3 +34,30 @@ test('conjugateSimpleTense produces indicativo presente for -ire isc (capire)', 
   const result = conjugateSimpleTense('cap', 'ire', true, 'presente');
   assert.deepEqual(result, ['capisco', 'capisci', 'capisce', 'capiamo', 'capite', 'capiscono']);
 });
+
+test('conjugateSimpleTense produces imperfetto for -are/-ere/-ire', () => {
+  assert.deepEqual(conjugateSimpleTense('parl', 'are', false, 'imperfetto'),
+    ['parlavo', 'parlavi', 'parlava', 'parlavamo', 'parlavate', 'parlavano']);
+  assert.deepEqual(conjugateSimpleTense('cred', 'ere', false, 'imperfetto'),
+    ['credevo', 'credevi', 'credeva', 'credevamo', 'credevate', 'credevano']);
+  assert.deepEqual(conjugateSimpleTense('cap', 'ire', true, 'imperfetto'),
+    ['capivo', 'capivi', 'capiva', 'capivamo', 'capivate', 'capivano']);
+});
+
+test('conjugateSimpleTense produces passato_remoto for -are/-ere/-ire', () => {
+  assert.deepEqual(conjugateSimpleTense('parl', 'are', false, 'passato_remoto'),
+    ['parlai', 'parlasti', 'parlò', 'parlammo', 'parlaste', 'parlarono']);
+  assert.deepEqual(conjugateSimpleTense('cred', 'ere', false, 'passato_remoto'),
+    ['credei', 'credesti', 'credé', 'credemmo', 'credeste', 'crederono']);
+  assert.deepEqual(conjugateSimpleTense('dorm', 'ire', false, 'passato_remoto'),
+    ['dormii', 'dormisti', 'dormì', 'dormimmo', 'dormiste', 'dormirono']);
+});
+
+test('conjugateSimpleTense produces futuro_semplice for -are/-ere/-ire', () => {
+  assert.deepEqual(conjugateSimpleTense('parl', 'are', false, 'futuro_semplice'),
+    ['parlerò', 'parlerai', 'parlerà', 'parleremo', 'parlerete', 'parleranno']);
+  assert.deepEqual(conjugateSimpleTense('cred', 'ere', false, 'futuro_semplice'),
+    ['crederò', 'crederai', 'crederà', 'crederemo', 'crederete', 'crederanno']);
+  assert.deepEqual(conjugateSimpleTense('dorm', 'ire', false, 'futuro_semplice'),
+    ['dormirò', 'dormirai', 'dormirà', 'dormiremo', 'dormirete', 'dormiranno']);
+});

@@ -36,6 +36,30 @@ function conjugateSimpleTense(root, group, isIsc, tense) {
     if (isIsc) return [root + 'isco', root + 'isci', root + 'isce', root + 'iamo', root + 'ite', root + 'iscono'];
     return [root + 'o', root + 'i', root + 'e', root + 'iamo', root + 'ite', root + 'ono'];
   }
+  if (tense === 'imperfetto') {
+    const vowel = group === 'are' ? 'a' : group === 'ere' ? 'e' : 'i';
+    return [
+      root + vowel + 'vo', root + vowel + 'vi', root + vowel + 'va',
+      root + vowel + 'vamo', root + vowel + 'vate', root + vowel + 'vano',
+    ];
+  }
+
+  if (tense === 'passato_remoto') {
+    if (group === 'are') {
+      return [root + 'ai', root + 'asti', root + 'ò', root + 'ammo', root + 'aste', root + 'arono'];
+    }
+    if (group === 'ere') {
+      return [root + 'ei', root + 'esti', root + 'é', root + 'emmo', root + 'este', root + 'erono'];
+    }
+    // ire (isc does not affect passato remoto)
+    return [root + 'ii', root + 'isti', root + 'ì', root + 'immo', root + 'iste', root + 'irono'];
+  }
+
+  if (tense === 'futuro_semplice') {
+    const stem = group === 'ire' ? root + 'ir' : root + 'er';
+    return [stem + 'ò', stem + 'ai', stem + 'à', stem + 'emo', stem + 'ete', stem + 'anno'];
+  }
+
   throw new Error(`Unsupported tense in conjugateSimpleTense: ${tense}`);
 }
 
