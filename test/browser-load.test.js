@@ -92,6 +92,7 @@ test('all js/*.js scripts referenced in index.html load together in one shared g
     'AccentInput',
     'Quiz',
     'Stats',
+    'Favorites',
   ];
 
   for (const globalName of expectedGlobals) {

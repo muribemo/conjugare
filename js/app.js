@@ -37,7 +37,7 @@
       if (favoritesOnly) {
         verbPool = Favorites.getFavorites(window.localStorage);
         if (verbPool.length === 0) {
-          errorEl.textContent = 'No tienes verbos favoritos guardados aun.';
+          errorEl.textContent = 'No tienes verbos favoritos guardados aún.';
           errorEl.hidden = false;
           return;
         }
