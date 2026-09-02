@@ -70,6 +70,9 @@ const IRREGULAR_VERBS = [
     congiuntivo_presente: ['possa', 'possa', 'possa', 'possiamo', 'possiate', 'possano'],
     congiuntivo_imperfetto: ['potessi', 'potessi', 'potesse', 'potessimo', 'poteste', 'potessero'],
     condizionale_presente: ['potrei', 'potresti', 'potrebbe', 'potremmo', 'potreste', 'potrebbero'],
+    // 'potere' has no true imperativo in standard Italian (you can't grammatically command
+    // someone to "be able to"); indicativo presente forms are reused here as a pragmatic
+    // filler so the app can still ask imperativo practice questions for every verb uniformly.
     imperativo: ['puoi', 'possa', 'possiamo', 'potete', 'possano'],
   }, { masc_sing: 'potuto', masc_plur: 'potuti' }),
 ];
