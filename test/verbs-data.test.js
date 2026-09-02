@@ -42,6 +42,40 @@ test('potere is present with correct presente and condizionale_presente', () => 
     ['potrei', 'potresti', 'potrebbe', 'potremmo', 'potreste', 'potrebbero']);
 });
 
+test('IRREGULAR_VERBS has 28 verbs (5 original + 23 batch A)', () => {
+  assert.equal(IRREGULAR_VERBS.length, 28);
+});
+
+test('dire is present with correct presente', () => {
+  const v = verb('dire');
+  assert.ok(v, 'dire should be in IRREGULAR_VERBS');
+  assert.deepEqual(v.conjugation.presente, ['dico', 'dici', 'dice', 'diciamo', 'dite', 'dicono']);
+});
+
+test('venire is present with correct presente', () => {
+  const v = verb('venire');
+  assert.ok(v, 'venire should be in IRREGULAR_VERBS');
+  assert.deepEqual(v.conjugation.presente, ['vengo', 'vieni', 'viene', 'veniamo', 'venite', 'vengono']);
+});
+
+test('bere is present with correct presente', () => {
+  const v = verb('bere');
+  assert.ok(v, 'bere should be in IRREGULAR_VERBS');
+  assert.deepEqual(v.conjugation.presente, ['bevo', 'bevi', 'beve', 'beviamo', 'bevete', 'bevono']);
+});
+
+test('dovere is present with correct presente', () => {
+  const v = verb('dovere');
+  assert.ok(v, 'dovere should be in IRREGULAR_VERBS');
+  assert.deepEqual(v.conjugation.presente, ['devo', 'devi', 'deve', 'dobbiamo', 'dovete', 'devono']);
+});
+
+test('nascere is present with correct presente', () => {
+  const v = verb('nascere');
+  assert.ok(v, 'nascere should be in IRREGULAR_VERBS');
+  assert.deepEqual(v.conjugation.presente, ['nasco', 'nasci', 'nasce', 'nasciamo', 'nascete', 'nascono']);
+});
+
 test('every irregular verb has all 15 tense keys', () => {
   const expectedKeys = [
     'presente', 'imperfetto', 'passato_remoto', 'futuro_semplice',
