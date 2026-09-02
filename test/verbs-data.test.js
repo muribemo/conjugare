@@ -42,8 +42,8 @@ test('potere is present with correct presente and condizionale_presente', () => 
     ['potrei', 'potresti', 'potrebbe', 'potremmo', 'potreste', 'potrebbero']);
 });
 
-test('IRREGULAR_VERBS has 28 verbs (5 original + 23 batch A)', () => {
-  assert.equal(IRREGULAR_VERBS.length, 28);
+test('IRREGULAR_VERBS has 50 verbs (5 original + 23 batch A + 22 batch B)', () => {
+  assert.equal(IRREGULAR_VERBS.length, 50);
 });
 
 test('dire is present with correct presente', () => {
@@ -74,6 +74,59 @@ test('nascere is present with correct presente', () => {
   const v = verb('nascere');
   assert.ok(v, 'nascere should be in IRREGULAR_VERBS');
   assert.deepEqual(v.conjugation.presente, ['nasco', 'nasci', 'nasce', 'nasciamo', 'nascete', 'nascono']);
+});
+
+test('mettere is present with correct presente', () => {
+  const v = verb('mettere');
+  assert.ok(v, 'mettere should be in IRREGULAR_VERBS');
+  assert.deepEqual(v.conjugation.presente, ['metto', 'metti', 'mette', 'mettiamo', 'mettete', 'mettono']);
+});
+
+test('scrivere is present with correct presente', () => {
+  const v = verb('scrivere');
+  assert.ok(v, 'scrivere should be in IRREGULAR_VERBS');
+  assert.deepEqual(v.conjugation.presente, ['scrivo', 'scrivi', 'scrive', 'scriviamo', 'scrivete', 'scrivono']);
+});
+
+test('tradurre is present with correct presente', () => {
+  const v = verb('tradurre');
+  assert.ok(v, 'tradurre should be in IRREGULAR_VERBS');
+  assert.deepEqual(v.conjugation.presente, ['traduco', 'traduci', 'traduce', 'traduciamo', 'traducete', 'traducono']);
+});
+
+test('porre is present with correct presente', () => {
+  const v = verb('porre');
+  assert.ok(v, 'porre should be in IRREGULAR_VERBS');
+  assert.deepEqual(v.conjugation.presente, ['pongo', 'poni', 'pone', 'poniamo', 'ponete', 'pongono']);
+});
+
+test('trarre is present with correct presente', () => {
+  const v = verb('trarre');
+  assert.ok(v, 'trarre should be in IRREGULAR_VERBS');
+  assert.deepEqual(v.conjugation.presente, ['traggo', 'trai', 'trae', 'traiamo', 'traete', 'traggono']);
+});
+
+test('sedere is present with correct presente', () => {
+  const v = verb('sedere');
+  assert.ok(v, 'sedere should be in IRREGULAR_VERBS');
+  assert.deepEqual(v.conjugation.presente, ['siedo', 'siedi', 'siede', 'sediamo', 'sedete', 'siedono']);
+});
+
+test('rompere is correct for passato_remoto, imperativo and participio', () => {
+  const v = verb('rompere');
+  assert.ok(v, 'rompere should be in IRREGULAR_VERBS');
+  assert.deepEqual(v.conjugation.passato_remoto, ['ruppi', 'rompesti', 'ruppe', 'rompemmo', 'rompeste', 'ruppero']);
+  assert.deepEqual(v.conjugation.imperativo, ['rompi', 'rompa', 'rompiamo', 'rompete', 'rompano']);
+  assert.deepEqual(v.conjugation.passato_prossimo,
+    ['ho rotto', 'hai rotto', 'ha rotto', 'abbiamo rotto', 'avete rotto', 'hanno rotto']);
+});
+
+test('porre is correct for passato_remoto, imperativo and participio', () => {
+  const v = verb('porre');
+  assert.deepEqual(v.conjugation.passato_remoto, ['posi', 'ponesti', 'pose', 'ponemmo', 'poneste', 'posero']);
+  assert.deepEqual(v.conjugation.imperativo, ['poni', 'ponga', 'poniamo', 'ponete', 'pongano']);
+  assert.deepEqual(v.conjugation.passato_prossimo,
+    ['ho posto', 'hai posto', 'ha posto', 'abbiamo posto', 'avete posto', 'hanno posto']);
 });
 
 test('every irregular verb has all 15 tense keys', () => {
