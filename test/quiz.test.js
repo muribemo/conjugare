@@ -25,7 +25,7 @@ test('createSession builds the requested number of questions, only from selected
 test('createSession with answerMode "mixed" assigns typed or multiple to each question', () => {
   const session = createSession({ tenses: ['presente'], answerMode: 'mixed', questionCount: 20 });
   const modes = new Set(session.questions.map(q => q.answerMode));
-  assert.ok(modes.has('typed') || modes.has('multiple'));
+  assert.ok(modes.has('typed') && modes.has('multiple'));
   for (const mode of modes) assert.ok(['typed', 'multiple'].includes(mode));
 });
 
