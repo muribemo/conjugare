@@ -72,6 +72,26 @@ test('checkAnswer: collapses internal whitespace in compound tense answers', () 
   assert.deepEqual(checkAnswer('ho  parlato', 'ho parlato'), { correct: true, accentOnly: false });
 });
 
+test('createSession with a verbPool only draws verbs from that pool', () => {
+  const session = createSession({
+    tenses: ['presente'],
+    answerMode: 'typed',
+    questionCount: 20,
+    verbPool: ['parlare', 'essere'],
+  });
+  assert.equal(session.questions.length, 20);
+  for (const q of session.questions) {
+    assert.ok(['parlare', 'essere'].includes(q.infinitive));
+  }
+  assert.deepEqual(session.verbPool, ['parlare', 'essere']);
+});
+
+test('createSession without a verbPool can draw from the full verb bank (regression check)', () => {
+  const session = createSession({ tenses: ['presente'], answerMode: 'typed', questionCount: 30 });
+  const infinitives = new Set(session.questions.map((q) => q.infinitive));
+  assert.ok(infinitives.size > 2, 'expected more variety than a 2-verb pool would produce');
+});
+
 test('createReviewSession rebuilds the exact failed questions, typed mode', () => {
   const failed = [
     { infinitive: 'parlare', tense: 'presente', pronoun: 'io', correctAnswer: 'parlo' },

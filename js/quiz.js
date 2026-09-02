@@ -33,9 +33,8 @@ function generateDistractors(correctAnswer, infinitive, tense, count) {
   return [...pool].slice(0, count);
 }
 
-function buildQuestion(tenses, answerMode) {
-  const allVerbs = listAllVerbs();
-  const infinitive = pickRandom(allVerbs).infinitive;
+function buildQuestion(tenses, answerMode, verbPool) {
+  const infinitive = verbPool ? pickRandom(verbPool) : pickRandom(listAllVerbs()).infinitive;
   const tense = pickRandom(tenses);
   const pronounIndex = tense === 'imperativo'
     ? Math.floor(Math.random() * 5) // imperativo has 5 forms, no "io"
@@ -65,12 +64,12 @@ function shuffle(array) {
   return copy;
 }
 
-function createSession({ tenses, answerMode, questionCount }) {
+function createSession({ tenses, answerMode, questionCount, verbPool }) {
   const questions = [];
   for (let i = 0; i < questionCount; i += 1) {
-    questions.push(buildQuestion(tenses, answerMode));
+    questions.push(buildQuestion(tenses, answerMode, verbPool));
   }
-  return { tenses, answerMode, questionCount, questions, currentIndex: 0, answers: [] };
+  return { tenses, answerMode, questionCount, verbPool, questions, currentIndex: 0, answers: [] };
 }
 
 function getCurrentQuestion(session) {
