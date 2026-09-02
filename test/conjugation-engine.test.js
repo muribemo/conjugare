@@ -61,3 +61,44 @@ test('conjugateSimpleTense produces futuro_semplice for -are/-ere/-ire', () => {
   assert.deepEqual(conjugateSimpleTense('dorm', 'ire', false, 'futuro_semplice'),
     ['dormirò', 'dormirai', 'dormirà', 'dormiremo', 'dormirete', 'dormiranno']);
 });
+
+test('conjugateSimpleTense produces congiuntivo_presente for -are/-ere/-ire/-ire isc', () => {
+  assert.deepEqual(conjugateSimpleTense('parl', 'are', false, 'congiuntivo_presente'),
+    ['parli', 'parli', 'parli', 'parliamo', 'parliate', 'parlino']);
+  assert.deepEqual(conjugateSimpleTense('cred', 'ere', false, 'congiuntivo_presente'),
+    ['creda', 'creda', 'creda', 'crediamo', 'crediate', 'credano']);
+  assert.deepEqual(conjugateSimpleTense('dorm', 'ire', false, 'congiuntivo_presente'),
+    ['dorma', 'dorma', 'dorma', 'dormiamo', 'dormiate', 'dormano']);
+  assert.deepEqual(conjugateSimpleTense('cap', 'ire', true, 'congiuntivo_presente'),
+    ['capisca', 'capisca', 'capisca', 'capiamo', 'capiate', 'capiscano']);
+});
+
+test('conjugateSimpleTense produces congiuntivo_imperfetto for -are/-ere/-ire', () => {
+  assert.deepEqual(conjugateSimpleTense('parl', 'are', false, 'congiuntivo_imperfetto'),
+    ['parlassi', 'parlassi', 'parlasse', 'parlassimo', 'parlaste', 'parlassero']);
+  assert.deepEqual(conjugateSimpleTense('cred', 'ere', false, 'congiuntivo_imperfetto'),
+    ['credessi', 'credessi', 'credesse', 'credessimo', 'credeste', 'credessero']);
+  assert.deepEqual(conjugateSimpleTense('dorm', 'ire', false, 'congiuntivo_imperfetto'),
+    ['dormissi', 'dormissi', 'dormisse', 'dormissimo', 'dormiste', 'dormissero']);
+});
+
+test('conjugateSimpleTense produces condizionale_presente for -are/-ere/-ire', () => {
+  assert.deepEqual(conjugateSimpleTense('parl', 'are', false, 'condizionale_presente'),
+    ['parlerei', 'parleresti', 'parlerebbe', 'parleremmo', 'parlereste', 'parlerebbero']);
+  assert.deepEqual(conjugateSimpleTense('cred', 'ere', false, 'condizionale_presente'),
+    ['crederei', 'crederesti', 'crederebbe', 'crederemmo', 'credereste', 'crederebbero']);
+  assert.deepEqual(conjugateSimpleTense('dorm', 'ire', false, 'condizionale_presente'),
+    ['dormirei', 'dormiresti', 'dormirebbe', 'dormiremmo', 'dormireste', 'dormirebbero']);
+});
+
+test('conjugateImperativo produces the 5 imperativo forms (tu, Lei, noi, voi, Loro)', () => {
+  const { conjugateImperativo } = require('../js/conjugation-engine.js');
+  assert.deepEqual(conjugateImperativo('parl', 'are', false),
+    ['parla', 'parli', 'parliamo', 'parlate', 'parlino']);
+  assert.deepEqual(conjugateImperativo('cred', 'ere', false),
+    ['credi', 'creda', 'crediamo', 'credete', 'credano']);
+  assert.deepEqual(conjugateImperativo('dorm', 'ire', false),
+    ['dormi', 'dorma', 'dormiamo', 'dormite', 'dormano']);
+  assert.deepEqual(conjugateImperativo('cap', 'ire', true),
+    ['capisci', 'capisca', 'capiamo', 'capite', 'capiscano']);
+});

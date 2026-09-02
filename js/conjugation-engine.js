@@ -60,7 +60,35 @@ function conjugateSimpleTense(root, group, isIsc, tense) {
     return [stem + 'ò', stem + 'ai', stem + 'à', stem + 'emo', stem + 'ete', stem + 'anno'];
   }
 
+  if (tense === 'congiuntivo_presente') {
+    if (group === 'are') return [root + 'i', root + 'i', root + 'i', root + 'iamo', root + 'iate', root + 'ino'];
+    if (group === 'ere') return [root + 'a', root + 'a', root + 'a', root + 'iamo', root + 'iate', root + 'ano'];
+    if (isIsc) return [root + 'isca', root + 'isca', root + 'isca', root + 'iamo', root + 'iate', root + 'iscano'];
+    return [root + 'a', root + 'a', root + 'a', root + 'iamo', root + 'iate', root + 'ano'];
+  }
+
+  if (tense === 'congiuntivo_imperfetto') {
+    const vowel = group === 'are' ? 'a' : group === 'ere' ? 'e' : 'i';
+    return [
+      root + vowel + 'ssi', root + vowel + 'ssi', root + vowel + 'sse',
+      root + vowel + 'ssimo', root + vowel + 'ste', root + vowel + 'ssero',
+    ];
+  }
+
+  if (tense === 'condizionale_presente') {
+    const stem = group === 'ire' ? root + 'ir' : root + 'er';
+    return [stem + 'ei', stem + 'esti', stem + 'ebbe', stem + 'emmo', stem + 'este', stem + 'ebbero'];
+  }
+
   throw new Error(`Unsupported tense in conjugateSimpleTense: ${tense}`);
 }
 
-module.exports = { PRONOUNS, AUXILIARIES, conjugateSimpleTense };
+// Imperativo presente has only 5 forms (no "io"): tu, Lei, noi, voi, Loro.
+function conjugateImperativo(root, group, isIsc) {
+  if (group === 'are') return [root + 'a', root + 'i', root + 'iamo', root + 'ate', root + 'ino'];
+  if (group === 'ere') return [root + 'i', root + 'a', root + 'iamo', root + 'ete', root + 'ano'];
+  if (isIsc) return [root + 'isci', root + 'isca', root + 'iamo', root + 'ite', root + 'iscano'];
+  return [root + 'i', root + 'a', root + 'iamo', root + 'ite', root + 'ano'];
+}
+
+module.exports = { PRONOUNS, AUXILIARIES, conjugateSimpleTense, conjugateImperativo };
