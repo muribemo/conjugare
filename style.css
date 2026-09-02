@@ -101,6 +101,7 @@ fieldset label {
 .accent-option { margin-right: 8px; }
 
 #practice-multiple-mode.options { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
+#practice-multiple-mode.options[hidden] { display: none; }
 
 #practice-multiple-mode .option {
   border: 1px solid var(--border);

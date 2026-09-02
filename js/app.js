@@ -5,7 +5,7 @@
 // in the browser.
 
 (function () {
-  const state = { session: null };
+  const state = { session: null, sessionFinished: false };
 
   function showScreen(id) {
     document.querySelectorAll('.screen').forEach((el) => {
@@ -29,8 +29,9 @@
       const questionCount = Number(document.querySelector('input[name="question-count"]:checked').value);
 
       state.session = Quiz.createSession({ tenses, answerMode, questionCount });
+      state.sessionFinished = false;
       showScreen('screen-practice');
-      renderQuestion();
+      renderQuestionImpl();
     });
   }
 
@@ -63,6 +64,7 @@
     if (question.answerMode === 'typed') {
       typedMode.hidden = false;
       multipleMode.hidden = true;
+      multipleMode.innerHTML = '';
       input.value = '';
       input.disabled = false;
       input.focus();
@@ -135,13 +137,12 @@
   }
 
   function finishSession() {
+    if (state.sessionFinished) return;
+    state.sessionFinished = true;
+
     Stats.recordSessionAnswers(window.localStorage, state.session.answers);
     showScreen('screen-result');
     renderResultImpl();
-  }
-
-  function renderQuestion() {
-    renderQuestionImpl();
   }
 
   // renderResultImpl is defined in a later task (result screen).
