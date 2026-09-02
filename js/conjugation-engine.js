@@ -172,7 +172,13 @@ function conjugateRegularVerb(infinitive, group, isIsc, auxiliaryName) {
   return { ...simple, imperativo, ...compound };
 }
 
-module.exports = {
+const ConjugationEngine = {
   PRONOUNS, AUXILIARIES, conjugateSimpleTense, conjugateImperativo,
   conjugateParticipio, buildCompoundTenses, conjugateRegularVerb,
 };
+
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = ConjugationEngine;
+} else {
+  window.ConjugationEngine = ConjugationEngine;
+}

@@ -36,6 +36,10 @@ const REGULAR_VERBS = [
   { infinitive: 'costruire', group: 'ire', isIsc: true, auxiliary: 'avere', translation: 'construir' },
 ];
 
+const RegularVerbsList = { REGULAR_VERBS };
+
 if (typeof module !== 'undefined' && module.exports) {
-  module.exports = { REGULAR_VERBS };
+  module.exports = RegularVerbsList;
+} else {
+  window.RegularVerbsList = RegularVerbsList;
 }

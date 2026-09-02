@@ -5,7 +5,9 @@
 // Compound tenses are built with buildCompoundTenses so they stay consistent
 // with the engine's auxiliary tables instead of being hand-typed and error-prone.
 
-const { AUXILIARIES, buildCompoundTenses } = require('./conjugation-engine.js');
+const { AUXILIARIES, buildCompoundTenses } = typeof module !== 'undefined' && module.exports
+  ? require('./conjugation-engine.js')
+  : window.ConjugationEngine;
 
 function makeVerb(infinitive, auxiliary, translation, simpleAndImperativo, participio) {
   const compound = buildCompoundTenses(auxiliary, participio);
@@ -575,6 +577,10 @@ const IRREGULAR_VERBS = [
   }, { masc_sing: 'valso', masc_plur: 'valsi' }),
 ];
 
+const VerbsData = { IRREGULAR_VERBS };
+
 if (typeof module !== 'undefined' && module.exports) {
-  module.exports = { IRREGULAR_VERBS };
+  module.exports = VerbsData;
+} else {
+  window.VerbsData = VerbsData;
 }

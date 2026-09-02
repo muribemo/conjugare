@@ -64,6 +64,10 @@ function attachAccentInput(inputElement, popupElement) {
   inputElement.addEventListener('blur', closePopup);
 }
 
+const AccentInput = { getAccentOptions, attachAccentInput };
+
 if (typeof module !== 'undefined' && module.exports) {
-  module.exports = { getAccentOptions, attachAccentInput };
+  module.exports = AccentInput;
+} else {
+  window.AccentInput = AccentInput;
 }

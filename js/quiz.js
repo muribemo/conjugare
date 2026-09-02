@@ -4,8 +4,9 @@
 // from the tenses the user selected, and (for multiple-choice questions)
 // generates plausible wrong answers from other pronoun forms of the same tense.
 
-const { PRONOUNS } = require('./conjugation-engine.js');
-const { getConjugation, listAllVerbs } = require('./verb-bank.js');
+const isNode = typeof module !== 'undefined' && module.exports;
+const { PRONOUNS } = isNode ? require('./conjugation-engine.js') : window.ConjugationEngine;
+const { getConjugation, listAllVerbs } = isNode ? require('./verb-bank.js') : window.VerbBank;
 
 function pickRandom(array) {
   return array[Math.floor(Math.random() * array.length)];
@@ -110,6 +111,10 @@ function recordAnswer(session, userAnswer) {
   return result;
 }
 
-if (typeof module !== 'undefined' && module.exports) {
-  module.exports = { createSession, getCurrentQuestion, generateDistractors, checkAnswer, recordAnswer };
+const Quiz = { createSession, getCurrentQuestion, generateDistractors, checkAnswer, recordAnswer };
+
+if (isNode) {
+  module.exports = Quiz;
+} else {
+  window.Quiz = Quiz;
 }
