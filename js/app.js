@@ -208,6 +208,10 @@
 
   function initProgressScreen() {
     document.getElementById('nav-progress').addEventListener('click', () => {
+      const sessionInProgress = state.session && !state.sessionFinished && document.getElementById('screen-practice').hidden === false;
+      if (sessionInProgress && !window.confirm('Vas a salir de la tanda actual. Se perdera tu progreso en esta tanda. ¿Continuar?')) {
+        return;
+      }
       showScreen('screen-progress');
       renderProgressScreen();
     });
