@@ -1,6 +1,6 @@
 const { test } = require('node:test');
 const assert = require('node:assert/strict');
-const { recordSessionAnswers, getStats, getWeakestTenses } = require('../js/stats.js');
+const { recordSessionAnswers, getStats, getWeakestTenses, aggregateBy } = require('../js/stats.js');
 
 function fakeStorage() {
   const data = new Map();
@@ -38,6 +38,19 @@ test('getStats on empty storage returns an empty-but-valid shape', () => {
   const stats = getStats(storage);
   assert.deepEqual(stats.byTense, {});
   assert.deepEqual(stats.byVerb, {});
+});
+
+test('aggregateBy groups items by key and tallies total/correct', () => {
+  const items = [
+    { tense: 'presente', correct: true },
+    { tense: 'presente', correct: false },
+    { tense: 'imperfetto', correct: true },
+  ];
+  const grouped = aggregateBy(items, 'tense');
+  assert.deepEqual(grouped, {
+    presente: { total: 2, correct: 1 },
+    imperfetto: { total: 1, correct: 1 },
+  });
 });
 
 test('getWeakestTenses sorts ascending by accuracy, requires a minimum sample size', () => {

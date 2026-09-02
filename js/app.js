@@ -13,6 +13,13 @@
     });
   }
 
+  function startSession(config) {
+    state.session = Quiz.createSession(config);
+    state.sessionFinished = false;
+    showScreen('screen-practice');
+    renderQuestionImpl();
+  }
+
   function initSetupScreen() {
     const startBtn = document.getElementById('start-session-btn');
     const errorEl = document.getElementById('setup-error');
@@ -28,10 +35,7 @@
       const answerMode = document.querySelector('input[name="answer-mode"]:checked').value;
       const questionCount = Number(document.querySelector('input[name="question-count"]:checked').value);
 
-      state.session = Quiz.createSession({ tenses, answerMode, questionCount });
-      state.sessionFinished = false;
-      showScreen('screen-practice');
-      renderQuestionImpl();
+      startSession({ tenses, answerMode, questionCount });
     });
   }
 
@@ -146,18 +150,13 @@
   }
 
   function renderResultImpl() {
-    const { answers, tenses, answerMode, questionCount } = state.session;
+    const { answers } = state.session;
     const correctCount = answers.filter((a) => a.correct).length;
     const percent = Math.round((correctCount / answers.length) * 100);
     document.getElementById('result-summary').textContent =
       `${correctCount}/${answers.length} correctas (${percent}%)`;
 
-    const byTense = {};
-    for (const a of answers) {
-      if (!byTense[a.tense]) byTense[a.tense] = { total: 0, correct: 0 };
-      byTense[a.tense].total += 1;
-      if (a.correct) byTense[a.tense].correct += 1;
-    }
+    const byTense = Stats.aggregateBy(answers, 'tense');
 
     const breakdownEl = document.getElementById('result-breakdown');
     breakdownEl.innerHTML = '';
@@ -167,16 +166,12 @@
       row.innerHTML = `<span>${TENSE_LABELS[tense]}</span><span>${s.correct}/${s.total}</span>`;
       breakdownEl.appendChild(row);
     });
-
-    state.lastConfig = { tenses, answerMode, questionCount };
   }
 
   function initResultScreen() {
     document.getElementById('retry-session-btn').addEventListener('click', () => {
-      state.session = Quiz.createSession(state.lastConfig);
-      state.sessionFinished = false;
-      showScreen('screen-practice');
-      renderQuestionImpl();
+      const { tenses, answerMode, questionCount } = state.session;
+      startSession({ tenses, answerMode, questionCount });
     });
 
     document.getElementById('back-to-setup-btn').addEventListener('click', () => {

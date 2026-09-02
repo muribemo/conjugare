@@ -48,7 +48,7 @@ function getWeakestTenses(storage, { minSamples = 3 } = {}) {
     .sort((a, b) => a.accuracy - b.accuracy);
 }
 
-const Stats = { recordSessionAnswers, getStats, getWeakestTenses };
+const Stats = { recordSessionAnswers, getStats, getWeakestTenses, aggregateBy };
 
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = Stats;
