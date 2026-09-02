@@ -71,6 +71,11 @@
       <p class="label" id="practice-progress">Pregunta 1/10</p>
       <p class="label" id="practice-tense-label">Congiuntivo presente</p>
       <h3 id="practice-verb"></h3>
+      <div id="practice-verb-tools">
+        <button id="show-translation-btn" type="button">Traduccion</button>
+        <button id="show-conjugation-btn" type="button" disabled>Ver conjugacion completa</button>
+      </div>
+      <span id="verb-translation" class="subtitle" hidden></span>
       <p class="subtitle" id="practice-prompt"></p>
 
       <div id="practice-typed-mode">
@@ -90,6 +95,7 @@
       <h2>Resultado</h2>
       <p id="result-summary" class="subtitle"></p>
       <div id="result-breakdown"></div>
+      <button id="retry-failed-btn" type="button" class="primary-btn" hidden>Repasar fallados</button>
       <button id="retry-session-btn" type="button" class="primary-btn">Repetir tanda</button>
       <button id="back-to-setup-btn" type="button" class="primary-btn">Configurar otra</button>
     </section>
@@ -104,6 +110,12 @@
       <button id="back-from-progress-btn" type="button" class="primary-btn">Volver</button>
     </section>
   </main>
+
+  <dialog id="conjugation-modal">
+    <button id="close-conjugation-modal-btn" type="button">Cerrar</button>
+    <h3 id="conjugation-modal-verb"></h3>
+    <div id="conjugation-modal-body"></div>
+  </dialog>
 
   <script src="js/conjugation-engine.js"></script>
   <script src="js/regular-verbs-list.js"></script>

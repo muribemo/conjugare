@@ -131,3 +131,39 @@ fieldset label {
 #progress-weakest .breakdown-row { border-color: var(--error); }
 
 .scrollable-breakdown { max-height: 300px; overflow-y: auto; }
+
+#retry-failed-btn { margin-right: 8px; }
+
+#practice-verb-tools { margin: 8px 0; display: flex; gap: 8px; }
+
+#practice-verb-tools button {
+  font-family: inherit;
+  font-size: 13px;
+  padding: 4px 10px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  cursor: pointer;
+}
+
+#practice-verb-tools button:disabled { opacity: 0.4; cursor: not-allowed; }
+
+#conjugation-modal {
+  border: 1px solid var(--border);
+  padding: 20px;
+  max-width: 480px;
+  width: 90%;
+}
+
+#conjugation-modal::backdrop { background: rgba(0, 0, 0, 0.4); }
+
+.conjugation-tense-block { margin-bottom: 12px; }
+
+.conjugation-tense-block h4 {
+  margin: 0 0 4px;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #666;
+}
+
+.conjugation-tense-block p { margin: 0; font-size: 14px; }

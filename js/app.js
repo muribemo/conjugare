@@ -50,16 +50,22 @@
     imperativo: 'Imperativo presente',
   };
 
+  // Display label for each PRONOUNS entry (the raw 'lui_lei' key isn't meant for display).
+  const PRONOUN_LABELS = { io: 'io', tu: 'tu', lui_lei: 'lui/lei', noi: 'noi', voi: 'voi', loro: 'loro' };
+
   function renderQuestionImpl() {
     const question = Quiz.getCurrentQuestion(state.session);
     document.getElementById('practice-progress').textContent =
       `Pregunta ${state.session.currentIndex + 1}/${state.session.questionCount}`;
     document.getElementById('practice-tense-label').textContent = TENSE_LABELS[question.tense];
     document.getElementById('practice-verb').textContent = question.infinitive;
-    document.getElementById('practice-prompt').textContent = `${question.pronoun} ___`;
+    document.getElementById('practice-prompt').textContent = `${PRONOUN_LABELS[question.pronoun] || question.pronoun} ___`;
 
     document.getElementById('practice-feedback').hidden = true;
     document.getElementById('next-question-btn').hidden = true;
+
+    document.getElementById('verb-translation').hidden = true;
+    document.getElementById('show-conjugation-btn').disabled = true;
 
     const typedMode = document.getElementById('practice-typed-mode');
     const multipleMode = document.getElementById('practice-multiple-mode');
@@ -101,6 +107,7 @@
       feedbackEl.className = 'feedback-text incorrect';
     }
     document.getElementById('next-question-btn').hidden = false;
+    document.getElementById('show-conjugation-btn').disabled = false;
   }
 
   function handleAnswer(userAnswer, optionEl) {
@@ -173,6 +180,39 @@
     });
   }
 
+  function initVerbTools() {
+    const translationEl = document.getElementById('verb-translation');
+    document.getElementById('show-translation-btn').addEventListener('click', () => {
+      const question = Quiz.getCurrentQuestion(state.session);
+      const verb = VerbBank.getConjugation(question.infinitive);
+      translationEl.textContent = verb.translation;
+      translationEl.hidden = !translationEl.hidden;
+    });
+
+    const modal = document.getElementById('conjugation-modal');
+    document.getElementById('show-conjugation-btn').addEventListener('click', () => {
+      const question = Quiz.getCurrentQuestion(state.session);
+      const verb = VerbBank.getConjugation(question.infinitive);
+      document.getElementById('conjugation-modal-verb').textContent = question.infinitive;
+
+      const bodyEl = document.getElementById('conjugation-modal-body');
+      bodyEl.innerHTML = Object.keys(TENSE_LABELS).map((tense) => {
+        const forms = verb.conjugation[tense];
+        const pronouns = tense === 'imperativo'
+          ? ['tu', 'Lei', 'noi', 'voi', 'Loro']
+          : ConjugationEngine.PRONOUNS.map((p) => PRONOUN_LABELS[p] || p);
+        const lines = pronouns.map((pronoun, i) => `<p>${pronoun}: ${forms[i]}</p>`).join('');
+        return `<div class="conjugation-tense-block"><h4>${TENSE_LABELS[tense]}</h4>${lines}</div>`;
+      }).join('');
+
+      modal.showModal();
+    });
+
+    document.getElementById('close-conjugation-modal-btn').addEventListener('click', () => {
+      modal.close();
+    });
+  }
+
   function finishSession() {
     if (state.sessionFinished) return;
     state.sessionFinished = true;
@@ -199,9 +239,19 @@
       row.innerHTML = `<span>${TENSE_LABELS[tense]}</span><span>${s.correct}/${s.total}</span>`;
       breakdownEl.appendChild(row);
     });
+
+    document.getElementById('retry-failed-btn').hidden = answers.every((a) => a.correct);
   }
 
   function initResultScreen() {
+    document.getElementById('retry-failed-btn').addEventListener('click', () => {
+      const failed = state.session.answers.filter((a) => !a.correct);
+      state.session = Quiz.createReviewSession(failed, state.session.answerMode);
+      state.sessionFinished = false;
+      showScreen('screen-practice');
+      renderQuestionImpl();
+    });
+
     document.getElementById('retry-session-btn').addEventListener('click', () => {
       const { tenses, answerMode, questionCount } = state.session;
       startSession({ tenses, answerMode, questionCount });
@@ -262,6 +312,7 @@
   document.addEventListener('DOMContentLoaded', () => {
     initSetupScreen();
     initPracticeScreen();
+    initVerbTools();
     initResultScreen();
     initProgressScreen();
     showScreen('screen-setup');
