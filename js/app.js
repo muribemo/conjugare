@@ -138,6 +138,29 @@
       document.getElementById('practice-input'),
       document.getElementById('accent-popup'),
     );
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key !== 'Enter') return;
+      if (document.getElementById('screen-practice').hidden) return;
+      // Use the DOM's own typed/multiple-choice visibility, set per question
+      // by renderQuestionImpl, rather than re-deriving the mode from
+      // Quiz.getCurrentQuestion(state.session): after the LAST question of a
+      // session is answered, Quiz.recordAnswer already advances
+      // session.currentIndex past the end of session.questions (it happens
+      // at answer time, not at "next" time), so getCurrentQuestion would
+      // return undefined here and incorrectly skip the "finish session"
+      // advance below. #practice-typed-mode's hidden state doesn't change
+      // until the next question actually renders, so it stays correct
+      // through the answer -> feedback -> advance/finish flow.
+      if (document.getElementById('practice-typed-mode').hidden) return;
+
+      const input = document.getElementById('practice-input');
+      if (!input.disabled) {
+        handleAnswer(input.value, null);
+      } else {
+        document.getElementById('next-question-btn').click();
+      }
+    });
   }
 
   function finishSession() {
