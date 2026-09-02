@@ -91,4 +91,40 @@ function conjugateImperativo(root, group, isIsc) {
   return [root + 'i', root + 'a', root + 'iamo', root + 'ite', root + 'ano'];
 }
 
-module.exports = { PRONOUNS, AUXILIARIES, conjugateSimpleTense, conjugateImperativo };
+function conjugateParticipio(root, group) {
+  const ending = group === 'are' ? 'ato' : group === 'ere' ? 'uto' : 'ito';
+  return { masc_sing: root + ending, masc_plur: root + ending.slice(0, -1) + 'i' };
+}
+
+// Builds the 7 compound tenses from an auxiliary's simple-tense conjugations
+// and a participio. With "essere", the participio agrees in number with the
+// subject: masc_sing for io/tu/lui_lei, masc_plur for noi/voi/loro (see design
+// note: gender defaults to masculine). With "avere", the participio is
+// invariant (always masc_sing), matching standard Italian grammar.
+function buildCompoundTenses(auxiliaryName, participio) {
+  const aux = AUXILIARIES[auxiliaryName];
+  const forms = auxiliaryName === 'essere'
+    ? [participio.masc_sing, participio.masc_sing, participio.masc_sing,
+      participio.masc_plur, participio.masc_plur, participio.masc_plur]
+    : [participio.masc_sing, participio.masc_sing, participio.masc_sing,
+      participio.masc_sing, participio.masc_sing, participio.masc_sing];
+
+  function combine(auxSimpleTense) {
+    return aux[auxSimpleTense].map((auxForm, i) => `${auxForm} ${forms[i]}`);
+  }
+
+  return {
+    passato_prossimo: combine('presente'),
+    trapassato_prossimo: combine('imperfetto'),
+    trapassato_remoto: combine('passato_remoto'),
+    futuro_anteriore: combine('futuro_semplice'),
+    congiuntivo_passato: combine('congiuntivo_presente'),
+    congiuntivo_trapassato: combine('congiuntivo_imperfetto'),
+    condizionale_passato: combine('condizionale_presente'),
+  };
+}
+
+module.exports = {
+  PRONOUNS, AUXILIARIES, conjugateSimpleTense, conjugateImperativo,
+  conjugateParticipio, buildCompoundTenses,
+};

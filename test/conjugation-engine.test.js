@@ -102,3 +102,37 @@ test('conjugateImperativo produces the 5 imperativo forms (tu, Lei, noi, voi, Lo
   assert.deepEqual(conjugateImperativo('cap', 'ire', true),
     ['capisci', 'capisca', 'capiamo', 'capite', 'capiscano']);
 });
+
+test('conjugateParticipio returns { masc_sing, masc_plur } for each group', () => {
+  const { conjugateParticipio } = require('../js/conjugation-engine.js');
+  assert.deepEqual(conjugateParticipio('parl', 'are'), { masc_sing: 'parlato', masc_plur: 'parlati' });
+  assert.deepEqual(conjugateParticipio('cred', 'ere'), { masc_sing: 'creduto', masc_plur: 'creduti' });
+  assert.deepEqual(conjugateParticipio('dorm', 'ire'), { masc_sing: 'dormito', masc_plur: 'dormiti' });
+});
+
+test('buildCompoundTenses combines auxiliary + participio with avere (invariant)', () => {
+  const { buildCompoundTenses } = require('../js/conjugation-engine.js');
+  const participio = { masc_sing: 'parlato', masc_plur: 'parlati' };
+  const result = buildCompoundTenses('avere', participio);
+  assert.deepEqual(result.passato_prossimo,
+    ['ho parlato', 'hai parlato', 'ha parlato', 'abbiamo parlato', 'avete parlato', 'hanno parlato']);
+  assert.deepEqual(result.trapassato_prossimo,
+    ['avevo parlato', 'avevi parlato', 'aveva parlato', 'avevamo parlato', 'avevate parlato', 'avevano parlato']);
+});
+
+test('buildCompoundTenses combines auxiliary + participio with essere (number agreement, masculine default)', () => {
+  const { buildCompoundTenses } = require('../js/conjugation-engine.js');
+  const participio = { masc_sing: 'andato', masc_plur: 'andati' };
+  const result = buildCompoundTenses('essere', participio);
+  assert.deepEqual(result.passato_prossimo,
+    ['sono andato', 'sei andato', 'è andato', 'siamo andati', 'siete andati', 'sono andati']);
+});
+
+test('buildCompoundTenses produces all 7 compound tense keys', () => {
+  const { buildCompoundTenses } = require('../js/conjugation-engine.js');
+  const result = buildCompoundTenses('avere', { masc_sing: 'parlato', masc_plur: 'parlati' });
+  assert.deepEqual(Object.keys(result).sort(), [
+    'condizionale_passato', 'congiuntivo_passato', 'congiuntivo_trapassato',
+    'futuro_anteriore', 'passato_prossimo', 'trapassato_prossimo', 'trapassato_remoto',
+  ]);
+});
