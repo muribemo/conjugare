@@ -75,6 +75,41 @@ function getCurrentQuestion(session) {
   return session.questions[session.currentIndex];
 }
 
+function normalize(str) {
+  return str.trim().toLowerCase();
+}
+
+// Strips Italian accent marks to compare "the same word ignoring accents".
+function stripAccents(str) {
+  return str.normalize('NFD').replace(/[̀-ͯ]/g, '');
+}
+
+function checkAnswer(userAnswer, correctAnswer) {
+  const normalizedUser = normalize(userAnswer);
+  const normalizedCorrect = normalize(correctAnswer);
+  if (normalizedUser === normalizedCorrect) {
+    return { correct: true, accentOnly: false };
+  }
+  const accentOnly = stripAccents(normalizedUser) === stripAccents(normalizedCorrect);
+  return { correct: false, accentOnly };
+}
+
+function recordAnswer(session, userAnswer) {
+  const question = getCurrentQuestion(session);
+  const result = checkAnswer(userAnswer, question.correctAnswer);
+  session.answers.push({
+    infinitive: question.infinitive,
+    tense: question.tense,
+    pronoun: question.pronoun,
+    userAnswer,
+    correctAnswer: question.correctAnswer,
+    correct: result.correct,
+    accentOnly: result.accentOnly,
+  });
+  session.currentIndex += 1;
+  return result;
+}
+
 if (typeof module !== 'undefined' && module.exports) {
-  module.exports = { createSession, getCurrentQuestion, generateDistractors };
+  module.exports = { createSession, getCurrentQuestion, generateDistractors, checkAnswer, recordAnswer };
 }

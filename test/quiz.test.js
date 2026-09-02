@@ -2,7 +2,7 @@
 const { test } = require('node:test');
 const assert = require('node:assert/strict');
 const { PRONOUNS } = require('../js/conjugation-engine.js');
-const { createSession, getCurrentQuestion, generateDistractors } = require('../js/quiz.js');
+const { createSession, getCurrentQuestion, generateDistractors, checkAnswer, recordAnswer } = require('../js/quiz.js');
 
 test('createSession builds the requested number of questions, only from selected tenses', () => {
   const session = createSession({
@@ -50,4 +50,30 @@ test('generateDistractors returns 2 wrong answers different from the correct one
   assert.equal(distractors.length, 2);
   assert.ok(!distractors.includes('parla'));
   assert.equal(new Set(distractors).size, 2);
+});
+
+test('checkAnswer: exact match is correct', () => {
+  assert.deepEqual(checkAnswer('parlo', 'parlo'), { correct: true, accentOnly: false });
+});
+
+test('checkAnswer: case-insensitive and trims whitespace', () => {
+  assert.deepEqual(checkAnswer('  Parlo  ', 'parlo'), { correct: true, accentOnly: false });
+});
+
+test('checkAnswer: wrong answer is incorrect', () => {
+  assert.deepEqual(checkAnswer('parli', 'parlo'), { correct: false, accentOnly: false });
+});
+
+test('checkAnswer: accent-only mismatch is marked incorrect but flagged accentOnly', () => {
+  assert.deepEqual(checkAnswer('parlo', 'parlò'), { correct: false, accentOnly: true });
+});
+
+test('recordAnswer appends to session.answers and advances currentIndex', () => {
+  const session = createSession({ tenses: ['presente'], answerMode: 'typed', questionCount: 3 });
+  const question = getCurrentQuestion(session);
+  recordAnswer(session, question.correctAnswer);
+  assert.equal(session.answers.length, 1);
+  assert.equal(session.answers[0].correct, true);
+  assert.equal(session.answers[0].tense, question.tense);
+  assert.equal(session.currentIndex, 1);
 });
