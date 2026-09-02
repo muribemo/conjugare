@@ -1,0 +1,10 @@
+{
+  "name": "conjugare",
+  "version": "1.0.0",
+  "description": "App web para practicar la conjugacion de verbos en italiano",
+  "private": true,
+  "scripts": {
+    "test": "node --test test/"
+  },
+  "license": "MIT"
+}
