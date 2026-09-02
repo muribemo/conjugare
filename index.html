@@ -15,7 +15,58 @@
   </header>
 
   <main id="app">
-    <section id="screen-setup" class="screen"></section>
+    <section id="screen-setup" class="screen">
+      <h2>Configura tu tanda</h2>
+
+      <fieldset>
+        <legend>Indicativo</legend>
+        <label><input type="checkbox" name="tense" value="presente"> Presente</label>
+        <label><input type="checkbox" name="tense" value="imperfetto"> Imperfetto</label>
+        <label><input type="checkbox" name="tense" value="passato_prossimo"> Passato prossimo</label>
+        <label><input type="checkbox" name="tense" value="trapassato_prossimo"> Trapassato prossimo</label>
+        <label><input type="checkbox" name="tense" value="passato_remoto"> Passato remoto</label>
+        <label><input type="checkbox" name="tense" value="trapassato_remoto"> Trapassato remoto</label>
+        <label><input type="checkbox" name="tense" value="futuro_semplice"> Futuro semplice</label>
+        <label><input type="checkbox" name="tense" value="futuro_anteriore"> Futuro anteriore</label>
+      </fieldset>
+
+      <fieldset>
+        <legend>Congiuntivo</legend>
+        <label><input type="checkbox" name="tense" value="congiuntivo_presente"> Presente</label>
+        <label><input type="checkbox" name="tense" value="congiuntivo_imperfetto"> Imperfetto</label>
+        <label><input type="checkbox" name="tense" value="congiuntivo_passato"> Passato</label>
+        <label><input type="checkbox" name="tense" value="congiuntivo_trapassato"> Trapassato</label>
+      </fieldset>
+
+      <fieldset>
+        <legend>Condizionale</legend>
+        <label><input type="checkbox" name="tense" value="condizionale_presente"> Presente</label>
+        <label><input type="checkbox" name="tense" value="condizionale_passato"> Passato</label>
+      </fieldset>
+
+      <fieldset>
+        <legend>Imperativo</legend>
+        <label><input type="checkbox" name="tense" value="imperativo"> Presente</label>
+      </fieldset>
+
+      <fieldset>
+        <legend>Modo de respuesta</legend>
+        <label><input type="radio" name="answer-mode" value="typed" checked> Escribir</label>
+        <label><input type="radio" name="answer-mode" value="multiple"> Opcion multiple</label>
+        <label><input type="radio" name="answer-mode" value="mixed"> Mixto</label>
+      </fieldset>
+
+      <fieldset>
+        <legend>Numero de preguntas</legend>
+        <label><input type="radio" name="question-count" value="10" checked> 10</label>
+        <label><input type="radio" name="question-count" value="20"> 20</label>
+        <label><input type="radio" name="question-count" value="50"> 50</label>
+      </fieldset>
+
+      <p id="setup-error" class="error-text" hidden>Elige al menos un tiempo verbal.</p>
+
+      <button id="start-session-btn" type="button" class="primary-btn">Empezar</button>
+    </section>
     <section id="screen-practice" class="screen" hidden></section>
     <section id="screen-result" class="screen" hidden></section>
     <section id="screen-progress" class="screen" hidden></section>
