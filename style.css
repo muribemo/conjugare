@@ -129,3 +129,5 @@ fieldset label {
 #retry-session-btn { margin-right: 8px; }
 
 #progress-weakest .breakdown-row { border-color: var(--error); }
+
+.scrollable-breakdown { max-height: 300px; overflow-y: auto; }

@@ -185,11 +185,13 @@
     const emptyEl = document.getElementById('progress-empty');
     const weakestEl = document.getElementById('progress-weakest');
     const byTenseEl = document.getElementById('progress-by-tense');
+    const byVerbEl = document.getElementById('progress-by-verb');
 
     if (entries.length === 0) {
       emptyEl.hidden = false;
       weakestEl.innerHTML = '';
       byTenseEl.innerHTML = '';
+      byVerbEl.innerHTML = '';
       return;
     }
     emptyEl.hidden = true;
@@ -203,6 +205,10 @@
 
     byTenseEl.innerHTML = entries.map(([tense, s]) =>
       `<div class="breakdown-row"><span>${TENSE_LABELS[tense]}</span><span>${s.correct}/${s.total}</span></div>`
+    ).join('');
+
+    byVerbEl.innerHTML = Stats.getVerbBreakdown(window.localStorage).map((v) =>
+      `<div class="breakdown-row"><span>${v.infinitive}</span><span>${v.correct}/${v.total} (${Math.round(v.accuracy * 100)}%)</span></div>`
     ).join('');
   }
 
