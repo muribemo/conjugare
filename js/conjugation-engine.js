@@ -124,7 +124,29 @@ function buildCompoundTenses(auxiliaryName, participio) {
   };
 }
 
+const SIMPLE_TENSE_NAMES = [
+  'presente', 'imperfetto', 'passato_remoto', 'futuro_semplice',
+  'congiuntivo_presente', 'congiuntivo_imperfetto', 'condizionale_presente',
+];
+
+// Builds the full 15-tense table for a regular verb.
+// infinitive: full infinitive form (e.g. 'parlare'), used only as a label/key upstream.
+// group: 'are' | 'ere' | 'ire'. isIsc: true for -ire verbs that take -isc- (e.g. capire).
+// auxiliaryName: 'avere' | 'essere', which auxiliary this verb takes in compound tenses.
+function conjugateRegularVerb(infinitive, group, isIsc, auxiliaryName) {
+  // Italian regular infinitives always end in exactly 'are'/'ere'/'ire' (3 chars).
+  const root = infinitive.slice(0, -3);
+  const simple = {};
+  for (const tense of SIMPLE_TENSE_NAMES) {
+    simple[tense] = conjugateSimpleTense(root, group, isIsc, tense);
+  }
+  const imperativo = conjugateImperativo(root, group, isIsc);
+  const participio = conjugateParticipio(root, group);
+  const compound = buildCompoundTenses(auxiliaryName, participio);
+  return { ...simple, imperativo, ...compound };
+}
+
 module.exports = {
   PRONOUNS, AUXILIARIES, conjugateSimpleTense, conjugateImperativo,
-  conjugateParticipio, buildCompoundTenses,
+  conjugateParticipio, buildCompoundTenses, conjugateRegularVerb,
 };

@@ -136,3 +136,20 @@ test('buildCompoundTenses produces all 7 compound tense keys', () => {
     'futuro_anteriore', 'passato_prossimo', 'trapassato_prossimo', 'trapassato_remoto',
   ]);
 });
+
+test('conjugateRegularVerb produces all 15 tenses for parlare (avere)', () => {
+  const { conjugateRegularVerb } = require('../js/conjugation-engine.js');
+  const result = conjugateRegularVerb('parlare', 'are', false, 'avere');
+  assert.deepEqual(result.presente, ['parlo', 'parli', 'parla', 'parliamo', 'parlate', 'parlano']);
+  assert.deepEqual(result.passato_prossimo,
+    ['ho parlato', 'hai parlato', 'ha parlato', 'abbiamo parlato', 'avete parlato', 'hanno parlato']);
+  assert.deepEqual(result.imperativo, ['parla', 'parli', 'parliamo', 'parlate', 'parlino']);
+  assert.equal(Object.keys(result).length, 15);
+});
+
+test('conjugateRegularVerb produces all 15 tenses for andare-shaped -are verb (essere)', () => {
+  const { conjugateRegularVerb } = require('../js/conjugation-engine.js');
+  const result = conjugateRegularVerb('arrivare', 'are', false, 'essere');
+  assert.deepEqual(result.passato_prossimo,
+    ['sono arrivato', 'sei arrivato', 'è arrivato', 'siamo arrivati', 'siete arrivati', 'sono arrivati']);
+});
