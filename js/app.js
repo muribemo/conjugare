@@ -65,6 +65,7 @@
     const multipleMode = document.getElementById('practice-multiple-mode');
     const input = document.getElementById('practice-input');
 
+    // Also read by the Enter-key listener in initPracticeScreen to detect the current question's mode.
     if (question.answerMode === 'typed') {
       typedMode.hidden = false;
       multipleMode.hidden = true;
@@ -141,6 +142,10 @@
 
     document.addEventListener('keydown', (event) => {
       if (event.key !== 'Enter') return;
+      // Ignore OS auto-repeat keydown events fired while Enter is held down;
+      // otherwise a single held press can submit/advance through several
+      // questions in a row (see key-repeat cascade bug).
+      if (event.repeat) return;
       if (document.getElementById('screen-practice').hidden) return;
       // Use the DOM's own typed/multiple-choice visibility, set per question
       // by renderQuestionImpl, rather than re-deriving the mode from
@@ -151,7 +156,12 @@
       // return undefined here and incorrectly skip the "finish session"
       // advance below. #practice-typed-mode's hidden state doesn't change
       // until the next question actually renders, so it stays correct
-      // through the answer -> feedback -> advance/finish flow.
+      // through the answer -> feedback -> advance/finish flow. The listener
+      // is attached to `document` rather than #practice-input because a
+      // disabled input cannot hold focus or receive its own keydown events,
+      // so once the input is disabled after answering, an input-level
+      // listener would never see the keypress that should advance to the
+      // next question.
       if (document.getElementById('practice-typed-mode').hidden) return;
 
       const input = document.getElementById('practice-input');
