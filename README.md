@@ -1,6 +1,6 @@
 # Conjugare
 
-Practica la conjugacion de verbos en italiano en los 15 tiempos que se conjugan por pronombre (io, tu, lui/lei, noi, voi, loro).
+Practica la conjugacion de verbos en italiano en los 15 tiempos que se conjugan por pronombre. La mayoria usa los 6 pronombres (io, tu, lui/lei, noi, voi, loro); el imperativo presente usa solo 5 (tu, Lei, noi, voi, Loro), ya que no existe forma "io".
 
 ## Uso local
 

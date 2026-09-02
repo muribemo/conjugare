@@ -70,7 +70,6 @@ fieldset label {
 .primary-btn:hover { opacity: 0.85; }
 
 .error-text { color: var(--error); font-size: 14px; }
-.success-text { color: var(--success); }
 
 .label { font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: #666; margin: 4px 0; }
 .subtitle { font-size: 14px; color: #444; }
