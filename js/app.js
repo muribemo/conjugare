@@ -351,8 +351,8 @@
     const mainPronouns = ConjugationEngine.PRONOUNS;
     const mainTenses = Object.keys(TENSE_LABELS).filter((tense) => tense !== 'imperativo');
     const mainTable = `
-      <table class="matrix-table">
-        <tr><th></th>${mainPronouns.map((p) => `<th>${PRONOUN_LABELS[p]}</th>`).join('')}</tr>
+      <table class="matrix-table matrix-table-main">
+        <tr><th></th>${mainPronouns.map((p) => `<th>${PRONOUN_LABELS[p] || p}</th>`).join('')}</tr>
         ${mainTenses.map((tense) => `
           <tr>
             <td>${TENSE_LABELS[tense]}</td>
