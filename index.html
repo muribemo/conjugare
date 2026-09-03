@@ -112,6 +112,7 @@
       <div id="progress-by-verb" class="scrollable-breakdown"></div>
       <h3>Favoritos</h3>
       <div id="progress-favorites" class="scrollable-breakdown"></div>
+      <button id="clear-progress-btn" type="button" class="danger-btn">Borrar progreso</button>
       <button id="back-from-progress-btn" type="button" class="primary-btn">Volver</button>
     </section>
   </main>
@@ -120,6 +121,12 @@
     <button id="close-conjugation-modal-btn" type="button">Cerrar</button>
     <h3 id="conjugation-modal-verb"></h3>
     <div id="conjugation-modal-body"></div>
+  </dialog>
+
+  <dialog id="verb-matrix-modal">
+    <button id="close-verb-matrix-modal-btn" type="button">Cerrar</button>
+    <h3 id="verb-matrix-verb"></h3>
+    <div id="verb-matrix-body"></div>
   </dialog>
 
   <script src="js/conjugation-engine.js"></script>

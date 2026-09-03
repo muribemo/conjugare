@@ -334,8 +334,56 @@
     ).join('');
 
     byVerbEl.innerHTML = Stats.getVerbBreakdown(window.localStorage).map((v) =>
-      `<div class="breakdown-row"><span>${v.infinitive}</span><span>${v.correct}/${v.total} (${Math.round(v.accuracy * 100)}%)</span></div>`
+      `<div class="breakdown-row" data-infinitive="${v.infinitive}"><span>${v.infinitive}</span><span>${v.correct}/${v.total} (${Math.round(v.accuracy * 100)}%)</span></div>`
     ).join('');
+  }
+
+  function matrixCell(combo) {
+    if (!combo) return '<td class="matrix-cell-empty">&mdash;</td>';
+    const cls = combo.correct === combo.total ? 'matrix-cell-correct' : 'matrix-cell-wrong';
+    return `<td class="${cls}">${combo.correct}/${combo.total}</td>`;
+  }
+
+  function renderVerbMatrix(infinitive) {
+    const combos = Stats.getVerbCombinations(window.localStorage, infinitive);
+    document.getElementById('verb-matrix-verb').textContent = infinitive;
+
+    const mainPronouns = ConjugationEngine.PRONOUNS;
+    const mainTenses = Object.keys(TENSE_LABELS).filter((tense) => tense !== 'imperativo');
+    const mainTable = `
+      <table class="matrix-table">
+        <tr><th></th>${mainPronouns.map((p) => `<th>${PRONOUN_LABELS[p]}</th>`).join('')}</tr>
+        ${mainTenses.map((tense) => `
+          <tr>
+            <td>${TENSE_LABELS[tense]}</td>
+            ${mainPronouns.map((p) => matrixCell(combos[tense] && combos[tense][p])).join('')}
+          </tr>
+        `).join('')}
+      </table>
+    `;
+
+    const imperativoPronouns = ['tu', 'Lei', 'noi', 'voi', 'Loro'];
+    const imperativoTable = `
+      <h4>${TENSE_LABELS.imperativo}</h4>
+      <table class="matrix-table">
+        <tr>${imperativoPronouns.map((p) => `<th>${p}</th>`).join('')}</tr>
+        <tr>${imperativoPronouns.map((p) => matrixCell(combos.imperativo && combos.imperativo[p])).join('')}</tr>
+      </table>
+    `;
+
+    document.getElementById('verb-matrix-body').innerHTML = mainTable + imperativoTable;
+    document.getElementById('verb-matrix-modal').showModal();
+  }
+
+  function initVerbMatrix() {
+    document.getElementById('progress-by-verb').addEventListener('click', (event) => {
+      const row = event.target.closest('[data-infinitive]');
+      if (!row) return;
+      renderVerbMatrix(row.dataset.infinitive);
+    });
+    document.getElementById('close-verb-matrix-modal-btn').addEventListener('click', () => {
+      document.getElementById('verb-matrix-modal').close();
+    });
   }
 
   function initProgressScreen() {
@@ -358,12 +406,21 @@
       Favorites.toggleFavorite(window.localStorage, infinitive);
       renderFavoritesList();
     });
+
+    document.getElementById('clear-progress-btn').addEventListener('click', () => {
+      if (!window.confirm('Esto borra tu historial de respuestas (estadisticas). Tus favoritos no se tocan. ¿Continuar?')) {
+        return;
+      }
+      Stats.clearHistory(window.localStorage);
+      renderProgressScreen();
+    });
   }
 
   document.addEventListener('DOMContentLoaded', () => {
     initSetupScreen();
     initPracticeScreen();
     initVerbTools();
+    initVerbMatrix();
     initResultScreen();
     initProgressScreen();
     showScreen('screen-setup');
