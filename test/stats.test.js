@@ -1,6 +1,6 @@
 const { test } = require('node:test');
 const assert = require('node:assert/strict');
-const { recordSessionAnswers, getStats, getWeakestTenses, aggregateBy, getVerbBreakdown } = require('../js/stats.js');
+const { recordSessionAnswers, getStats, getWeakestTenses, aggregateBy, getVerbBreakdown, getVerbCombinations, clearHistory } = require('../js/stats.js');
 
 function fakeStorage() {
   const data = new Map();
@@ -109,4 +109,41 @@ test('getVerbBreakdown includes verbs with only 1 sample (no minSamples filter)'
   const breakdown = getVerbBreakdown(storage);
   assert.equal(breakdown.length, 1);
   assert.equal(breakdown[0].total, 1);
+});
+
+test('getVerbCombinations groups only the given verb answers by tense then pronoun', () => {
+  const storage = fakeStorage();
+  recordSessionAnswers(storage, [
+    { infinitive: 'parlare', tense: 'presente', pronoun: 'io', correct: true, accentOnly: false },
+    { infinitive: 'parlare', tense: 'presente', pronoun: 'io', correct: false, accentOnly: false },
+    { infinitive: 'parlare', tense: 'presente', pronoun: 'tu', correct: true, accentOnly: false },
+    { infinitive: 'parlare', tense: 'imperativo', pronoun: 'Lei', correct: true, accentOnly: false },
+    { infinitive: 'essere', tense: 'presente', pronoun: 'io', correct: true, accentOnly: false },
+  ]);
+  const combos = getVerbCombinations(storage, 'parlare');
+  assert.deepEqual(combos.presente.io, { total: 2, correct: 1 });
+  assert.deepEqual(combos.presente.tu, { total: 1, correct: 1 });
+  assert.deepEqual(combos.imperativo.Lei, { total: 1, correct: 1 });
+  assert.equal(combos.presente.noi, undefined);
+  assert.equal('essere' in combos, false);
+});
+
+test('getVerbCombinations returns an empty object for a verb never practiced', () => {
+  const storage = fakeStorage();
+  recordSessionAnswers(storage, [
+    { infinitive: 'essere', tense: 'presente', pronoun: 'io', correct: true, accentOnly: false },
+  ]);
+  assert.deepEqual(getVerbCombinations(storage, 'parlare'), {});
+});
+
+test('clearHistory removes all recorded answers but does not throw on empty storage', () => {
+  const storage = fakeStorage();
+  recordSessionAnswers(storage, [
+    { infinitive: 'parlare', tense: 'presente', pronoun: 'io', correct: true, accentOnly: false },
+  ]);
+  clearHistory(storage);
+  assert.deepEqual(getStats(storage), { byTense: {}, byVerb: {} });
+  assert.deepEqual(getVerbBreakdown(storage), []);
+  clearHistory(storage); // clearing already-empty history should not throw
+  assert.deepEqual(getStats(storage), { byTense: {}, byVerb: {} });
 });

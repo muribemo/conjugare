@@ -56,7 +56,27 @@ function getVerbBreakdown(storage) {
     .sort((a, b) => a.accuracy - b.accuracy || a.infinitive.localeCompare(b.infinitive));
 }
 
-const Stats = { recordSessionAnswers, getStats, getWeakestTenses, aggregateBy, getVerbBreakdown };
+// Groups one verb's answers by tense then pronoun, for a per-verb detail view.
+function getVerbCombinations(storage, infinitive) {
+  const history = loadHistory(storage).filter((a) => a.infinitive === infinitive);
+  const result = {};
+  for (const a of history) {
+    if (!result[a.tense]) result[a.tense] = {};
+    if (!result[a.tense][a.pronoun]) result[a.tense][a.pronoun] = { total: 0, correct: 0 };
+    result[a.tense][a.pronoun].total += 1;
+    if (a.correct) result[a.tense][a.pronoun].correct += 1;
+  }
+  return result;
+}
+
+function clearHistory(storage) {
+  saveHistory(storage, []);
+}
+
+const Stats = {
+  recordSessionAnswers, getStats, getWeakestTenses, aggregateBy, getVerbBreakdown,
+  getVerbCombinations, clearHistory,
+};
 
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = Stats;
